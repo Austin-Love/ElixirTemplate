@@ -1,0 +1,66 @@
+x-phoenix: &phoenix
+  build:
+    context: .
+    dockerfile: Dockerfile
+  links:
+    - db
+  volumes:
+    - ..:/app:cached
+  environment:
+    - MIX_ENV=dev
+    - NODE_ENV=dev
+    - DATABASE_URL=postgres://postgres:postgres@postgres/elixir_template
+
+
+services:
+  # app:
+  #   <<: *phoenix
+  #   command: mix do deps.get, deps.compile, compile, ash.setup, ash.migrate, phx.server
+  #   ports:
+  #     - "4000:4000"
+  #   healthcheck: #TODO: benchmark compile time on local and ec2 machines
+  #     test: curl --fail http://localhost:4000 || exit 1
+  #     interval: 60s
+  #     retries: 5
+  #     start_period: 30s
+  #     timeout: 10s
+  #   depends_on:
+  #     db:
+  #       condition: service_healthy
+  db:
+    container_name: postgres
+    image: postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    healthcheck:
+      test: nc -z localhost 5432
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+  devcontainer:
+    <<: *phoenix
+    container_name: devcontainer
+    # volumes:
+      # - .:/app:cached
+      # caching to speed up build time after the project has initially been built.
+      # - node_modules:/app/assets
+      # - elixir_deps:/app/deps
+      # - elixir_build:/app/_build
+      # - elixir_ls:/app/.elixir_ls
+
+    command: /bin/sh -c "while sleep 1000; do :; done"
+
+volumes:
+  node_modules:
+  elixir_deps:
+  elixir_ls:
+  elixir_build:
+  db-data:

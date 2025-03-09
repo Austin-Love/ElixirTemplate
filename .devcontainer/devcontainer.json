@@ -1,0 +1,121 @@
+{
+  "name": "ttrpg",
+  "dockerComposeFile": ["./docker-compose.yml"],
+  "service": "devcontainer",
+  "workspaceFolder": "/app",
+  "mounts": [
+    // Persisting user profile
+    "source=profile,target=/root,type=volume",
+    "target=/root/.vscode-server,type=volume"
+  ],
+  "customizations": {
+    // Configure properties specific to VS Code.
+    "vscode": {
+      // Set *default* container specific settings.json values on container create.
+      "settings": {
+        "[elixir]": {
+          "editor.formatOnSave": true,
+          "editor.defaultFormatter": "JakeBecker.elixir-ls"
+        },
+        "[phoenix-heex]": {
+          "editor.formatOnSave": true,
+          "editor.defaultFormatter": "JakeBecker.elixir-ls"
+        },
+        // "elixirLS.projectDir": "minimap",
+        "elixirLS.fetchDeps": true,
+        "files.associations": {
+          "*.heex": "phoenix-heex"
+        },
+        "[jsonc]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "emmet.includeLanguages": {
+          "phoenix-heex": "html",
+          "elixir": "html"
+        },
+        "eslint.enable": true,
+        "editor.codeActionsOnSave": {
+          "source.fixAll.eslint": "explicit"
+        },
+        "cSpell.words": [
+          "autogen",
+          "bitnamicharts",
+          "dgettext",
+          "dngettext",
+          "geospatial",
+          "gettext",
+          "JDBC",
+          "liveview",
+          "mapbox",
+          "msgid",
+          "msgstr",
+          "ngettext",
+          "noreply",
+          "opentelemetry",
+          "otlp",
+          "postgis",
+          "psql",
+          "shellcheck",
+          "userid"
+        ],
+        "prettier.proseWrap": "always",
+        "prettier.useTabs": false,
+        "prettier.requirePragma": true,
+        "[javascript]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[shellscript]": {
+          "editor.defaultFormatter": "foxundermoon.shell-format"
+        },
+        "[yaml]": {
+          "editor.defaultFormatter": null
+        },
+        "[ignore]": {
+          "editor.defaultFormatter": "foxundermoon.shell-format"
+        }
+      },
+      // Add the IDs of extensions you want installed when the container is created.
+      "extensions": [
+        // Collaboration //
+        "editorconfig.editorconfig",
+        "ms-vsliveshare.vsliveshare",
+
+        // Utilites //
+        "ms-vscode-remote.vscode-remote-extensionpack",
+        "chrisdias.vscode-opennewinstance",
+        "johnpapa.vscode-peacock",
+
+        // Language Support //
+        // Elixir
+        "pgourlain.erlang",
+        "JakeBecker.elixir-ls",
+        "phoenixframework.phoenix",
+        "pantajoe.vscode-elixir-credo",
+        "martinhrvn.ash-framework-snippets",
+        // Terraform
+        "HashiCorp.terraform",
+        // Powershell
+        "ms-vscode.powershell",
+        // JS/CSS/HTML
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "bradlc.vscode-tailwindcss",
+        "naumovs.color-highlight",
+        // Shell
+        "timonwong.shellcheck",
+        "foxundermoon.shell-format",
+        // SQL
+        "inferrinizzard.prettier-sql-vscode",
+        // Configs
+        "ahmadalli.vscode-nginx-conf",
+        "redhat.vscode-yaml",
+
+        // Documentation
+        "streetsidesoftware.code-spell-checker",
+        "jebbs.plantuml",
+        "likec4.likec4-vscode",
+        "davidanson.vscode-markdownlint"
+      ]
+    }
+  }
+}
