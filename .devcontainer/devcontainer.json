@@ -1,12 +1,15 @@
 {
-  "name": "ttrpg",
+  "name": "elixir_template",
   "dockerComposeFile": ["./docker-compose.yml"],
-  "service": "devcontainer",
+  "service": "devcontainer-elixir_template",
   "workspaceFolder": "/app",
   "mounts": [
     // Persisting user profile
     "source=profile,target=/root,type=volume",
-    "target=/root/.vscode-server,type=volume"
+    "target=/root/.vscode-server,type=volume",
+    // "type=volume,dst=/.config/bin/ -e FLY_CONFIG_DIR=\"/$HOME/.fly/.config\" ghcr.io/superfly/flyctl:latest",
+    // "type=volume,dst=/.config/bin/ -e FLYCTL_INSTALL=\"${FLYCTL_INSTALL:-$HOME/.fly}\" ghcr.io/superfly/flyctl:latest"
+
   ],
   "customizations": {
     // Configure properties specific to VS Code.

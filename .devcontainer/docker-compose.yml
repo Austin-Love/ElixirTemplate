@@ -3,17 +3,49 @@ x-phoenix: &phoenix
     context: .
     dockerfile: Dockerfile
   links:
-    - db
+    - db-elixir_template
   volumes:
     - ..:/app:cached
+    - $USERPROFILE/.fly:/root/.fly
+  ports:
+    - 4000:4000
+
   environment:
     - MIX_ENV=dev
     - NODE_ENV=dev
-    - DATABASE_URL=postgres://postgres:postgres@postgres/elixir_template
+    - DATABASE_URL=postgres://postgres:postgres-elixir_template@postgres-elixir_template/elixir_template
+    - PHX_HOST=localhost
+
 
 
 services:
-  # app:
+  db-elixir_template:
+    container_name: postgres-elixir_template
+    image: postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: postgres-elixir_template
+      POSTGRES_DB: postgres-elixir_template
+      POSTGRES_USER: postgres
+    healthcheck:
+      test: nc -z localhost 5432
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    volumes:
+      - db-data-elixir_template:/var/lib/postgresql/data
+
+  devcontainer-elixir_template:
+    <<: *phoenix
+    container_name: devcontainer-elixir_template
+    command: /bin/sh -c "while sleep 1000; do :; done"
+
+      
+
+  # app-elixir_template:
   #   <<: *phoenix
   #   command: mix do deps.get, deps.compile, compile, ash.setup, ash.migrate, phx.server
   #   ports:
@@ -25,42 +57,9 @@ services:
   #     start_period: 30s
   #     timeout: 10s
   #   depends_on:
-  #     db:
+  #     db-elixir_template:
   #       condition: service_healthy
-  db:
-    container_name: postgres
-    image: postgres
-    restart: unless-stopped
-    ports:
-      - "5432:5432"
-    environment:
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: postgres
-    healthcheck:
-      test: nc -z localhost 5432
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 5s
-    volumes:
-      - db-data:/var/lib/postgresql/data
-
-  devcontainer:
-    <<: *phoenix
-    container_name: devcontainer
-    # volumes:
-      # - .:/app:cached
-      # caching to speed up build time after the project has initially been built.
-      # - node_modules:/app/assets
-      # - elixir_deps:/app/deps
-      # - elixir_build:/app/_build
-      # - elixir_ls:/app/.elixir_ls
-
-    command: /bin/sh -c "while sleep 1000; do :; done"
 
 volumes:
-  node_modules:
-  elixir_deps:
-  elixir_ls:
-  elixir_build:
-  db-data:
+  app:
+  db-data-elixir_template:
