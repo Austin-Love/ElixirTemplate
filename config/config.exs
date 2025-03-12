@@ -46,8 +46,7 @@ config :spark,
 
 config :elixir_template,
   ecto_repos: [ElixirTemplate.Repo],
-  generators: [timestamp_type: :utc_datetime],
-  ash_domains: [ElixirTemplate.Accounts]
+  generators: [timestamp_type: :utc_datetime]
 
 # Configure your database
 config :elixir_template, ElixirTemplate.Repo,
