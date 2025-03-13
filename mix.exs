@@ -38,11 +38,11 @@ defmodule ElixirTemplate.MixProject do
     [
       {:sourceror, "~> 1.7", only: [:dev, :test]},
       {:ash, "~> 3.0"},
-      {:ash_phoenix, "~> 2.0"},
-      {:ash_postgres, "~> 2.0"},
-      {:ash_admin, "~> 0.13"},
-      {:ash_authentication, "~> 4.0"},
-      {:ash_authentication_phoenix, "~> 2.0"},
+      # {:ash_phoenix, "~> 2.0"},
+      # {:ash_postgres, "~> 2.0"},
+      # {:ash_admin, "~> 0.13"},
+      # {:ash_authentication, "~> 4.0"},
+      # {:ash_authentication_phoenix, "~> 2.0"},
       {:bcrypt_elixir, "~> 3.0"},
       {:simple_sat, "~> 0.1.3"},
       {:phoenix, "~> 1.7.14"},
@@ -232,3 +232,19 @@ defmodule ElixirTemplate.MixProject do
     end
   end
 end
+
+sh < curl(~c"https://ash-hq.org/new?install=phoenix") &&
+  mix(
+    igniter.install(
+      ash_phoenix(
+        ash_postgres(
+          ash_authentication(
+            ash_authentication_phoenix(
+              ash_admin ash_state_machine --
+                          (auth - strategy(magic_link -- yes && mix(ash.setup)))
+            )
+          )
+        )
+      )
+    )
+  )
