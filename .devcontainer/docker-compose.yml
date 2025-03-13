@@ -6,7 +6,11 @@ x-phoenix: &phoenix
     - db-elixir_template
   volumes:
     - ..:/app:cached
-    - $USERPROFILE/.fly:/root/.fly
+    - ${USERPROFILE}/.fly:/root/.fly
+  env_file:
+    - path: .env
+      required: false
+
   ports:
     - 4000:4000
 
@@ -15,8 +19,6 @@ x-phoenix: &phoenix
     - NODE_ENV=dev
     - DATABASE_URL=postgres://postgres:postgres-elixir_template@postgres-elixir_template/elixir_template
     - PHX_HOST=localhost
-
-
 
 services:
   db-elixir_template:
@@ -42,8 +44,6 @@ services:
     <<: *phoenix
     container_name: devcontainer-elixir_template
     command: /bin/sh -c "while sleep 1000; do :; done"
-
-      
 
   # app-elixir_template:
   #   <<: *phoenix

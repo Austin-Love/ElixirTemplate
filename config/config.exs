@@ -7,6 +7,8 @@
 # General application configuration
 import Config
 
+config :spark, formatter: ["Ash.Resource": [section_order: [:postgres]]]
+
 # config :ash,
 #   include_embedded_source_by_default?: false,
 #   show_keysets_for_all_actions?: false,
@@ -43,6 +45,8 @@ import Config
 #       section_order: [:admin, :resources, :policies, :authorization, :domain, :execution]
 #     ]
 #   ]
+config :elixir_template,
+  token_signing_secret: System.get_env("TOKEN_SIGNING_SECRET")
 
 config :elixir_template,
   ecto_repos: [ElixirTemplate.Repo],
