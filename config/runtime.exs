@@ -20,6 +20,11 @@ if System.get_env("PHX_SERVER") do
   config :elixir_template, ElixirTemplateWeb.Endpoint, server: true
 end
 
+config :elixir_template, ElixirTemplate.Repo,
+# ssl: true,
+url: System.get_env("DATABASE_URL", "")
+
+
 if config_env() == :prod do
   database_url =
     System.get_env("DATABASE_URL") ||

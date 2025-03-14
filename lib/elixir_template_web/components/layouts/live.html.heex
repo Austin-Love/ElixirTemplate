@@ -1,0 +1,24 @@
+<header>
+  <.navbar id="root-nav-bar" variant="shadow" color="natural">
+    <:start_content>
+      <%= if(@current_user) do %>
+        <.link href={~p"/sign-out"}>
+          Sign Out
+        </.link>
+      <% else %>
+        <.link href={~p"/sign-in"}>
+          Sign in
+        </.link>
+      <% end %>
+    </:start_content>
+
+    <:list :for={%{id: dom_id, path: path, label: label} <- assigns[:links]}>
+      <.link title={label} navigate={path} id={dom_id}>
+        {label}
+      </.link>
+    </:list>
+  </.navbar>
+</header>
+<main>
+  <% @inner_content %>
+</main>

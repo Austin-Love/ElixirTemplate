@@ -8,11 +8,11 @@
 import Config
 
 config :ash,
+  allow_forbidden_field_for_relationships_by_default?: true,
   include_embedded_source_by_default?: false,
   show_keysets_for_all_actions?: false,
   default_page_type: :keyset,
-  policies: [no_filter_static_forbidden_reads?: false],
-  allow_forbidden_field_for_relationships_by_default?: true
+  policies: [no_filter_static_forbidden_reads?: false]
 
 config :spark,
   formatter: [
@@ -49,13 +49,6 @@ config :elixir_template,
   generators: [timestamp_type: :utc_datetime],
   ash_domains: [ElixirTemplate.Accounts]
 
-# Configure your database
-config :elixir_template, ElixirTemplate.Repo,
-  url: System.get_env("DATABASE_URL"),
-  stacktrace: true,
-  show_sensitive_data_on_connection_error: config_env() != :prod,
-  pool_size: 10
-
 # Configures the endpoint
 config :elixir_template, ElixirTemplateWeb.Endpoint,
   url: [host: "localhost"],
@@ -65,7 +58,7 @@ config :elixir_template, ElixirTemplateWeb.Endpoint,
     layout: false
   ],
   pubsub_server: ElixirTemplate.PubSub,
-  live_view: [signing_salt: "xwUqkBg1"]
+  live_view: [signing_salt: "KjVbassY"]
 
 # Configures the mailer
 #
