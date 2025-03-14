@@ -88,7 +88,8 @@ defmodule ElixirTemplateWeb do
       # HTML escaping functionality
       import Phoenix.HTML
       # Core UI components
-      import ElixirTemplateWeb.CoreComponents
+      # import ElixirTemplateWeb.CoreComponents
+      use ElixirTemplateWeb.Components.MishkaComponents
 
       # Shortcut for generating JS commands
       alias Phoenix.LiveView.JS

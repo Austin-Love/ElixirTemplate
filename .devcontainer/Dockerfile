@@ -1,7 +1,4 @@
-# FROM flyio/flyctl:latest AS flyio
-
-
-FROM elixir:1.17.2-alpine AS runner
+FROM elixir:1.18.2-alpine AS runner
 
 
 FROM runner

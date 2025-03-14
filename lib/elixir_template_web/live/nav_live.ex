@@ -7,6 +7,7 @@ defmodule ElixirTemplateWeb.NavLive do
   alias ElixirTemplate.{ProfileLive, SettingsLive}
 
   def on_mount(:default, _params, _session, socket) do
+
     if connected?(socket) do
       # subscribe to topics
     end
@@ -15,7 +16,7 @@ defmodule ElixirTemplateWeb.NavLive do
       case socket.assigns[:current_user] do
         %{} = _user ->
           socket
-          |> assign(:links, [bp(~p"/", "Home"), bp(~p"/profile/settings", "Settings")])
+          |> assign(:links, [bp(~p"/", "Home"), bp(~p"/settings", "Settings")])
 
         _ ->
           assign(socket, :links, [])

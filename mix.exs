@@ -5,7 +5,7 @@ defmodule ElixirTemplate.MixProject do
     [
       app: :elixir_template,
       version: "0.1.0",
-      elixir: "~> 1.17",
+      elixir: "~> 1.18",
       test_coverage: [summary: [threshold: calculate_threshold()]],
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,

@@ -65,6 +65,16 @@ defmodule ElixirTemplate.Accounts.User do
       prepare AshAuthentication.Preparations.FilterBySubject
     end
 
+    update :change_username do
+      argument :username, :string, allow_nil?: false
+
+    end
+
+    update :change_email do
+      argument :email, :string, allow_nil?: false
+
+    end
+
     update :change_password do
       # Use this action to allow users to change their password by providing
       # their current password and a new password.
