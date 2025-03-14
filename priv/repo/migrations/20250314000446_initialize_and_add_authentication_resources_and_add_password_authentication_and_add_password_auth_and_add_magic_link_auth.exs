@@ -1,4 +1,4 @@
-defmodule ElixirTemplate.Repo.Migrations.InitializeAndAddAuthenticationResourcesAndAddMagicLinkAuth do
+defmodule ElixirTemplate.Repo.Migrations.InitializeAndAddAuthenticationResourcesAndAddPasswordAuthenticationAndAddPasswordAuthAndAddMagicLinkAuth do
   @moduledoc """
   Updates resources based on their most recent snapshots.
 
@@ -9,24 +9,22 @@ defmodule ElixirTemplate.Repo.Migrations.InitializeAndAddAuthenticationResources
 
   def up do
     create table(:users, primary_key: false) do
+      add :confirmed_at, :utc_datetime_usec
       add :id, :uuid, null: false, default: fragment("gen_random_uuid()"), primary_key: true
       add :email, :citext, null: false
+      add :hashed_password, :text
     end
 
     create unique_index(:users, [:email], name: "users_unique_email_index")
 
     create table(:tokens, primary_key: false) do
-      add :created_at, :utc_datetime_usec,
-        null: false,
-        default: fragment("(now() AT TIME ZONE 'utc')")
-
       add :jti, :text, null: false, primary_key: true
       add :subject, :text, null: false
       add :expires_at, :utc_datetime, null: false
       add :purpose, :text, null: false
       add :extra_data, :map
 
-      add :inserted_at, :utc_datetime_usec,
+      add :created_at, :utc_datetime_usec,
         null: false,
         default: fragment("(now() AT TIME ZONE 'utc')")
 

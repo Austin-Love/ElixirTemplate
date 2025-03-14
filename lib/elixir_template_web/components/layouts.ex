@@ -9,6 +9,7 @@ defmodule ElixirTemplateWeb.Layouts do
   `use ElixirTemplateWeb, :live_view`.
   """
   use ElixirTemplateWeb, :html
+  import ElixirTemplateWeb.Components.Navbar
 
   embed_templates "layouts/*"
 end

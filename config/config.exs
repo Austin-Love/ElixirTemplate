@@ -7,57 +7,47 @@
 # General application configuration
 import Config
 
-config :spark, formatter: ["Ash.Resource": [section_order: [:postgres]]]
+config :ash,
+  allow_forbidden_field_for_relationships_by_default?: true,
+  include_embedded_source_by_default?: false,
+  show_keysets_for_all_actions?: false,
+  default_page_type: :keyset,
+  policies: [no_filter_static_forbidden_reads?: false]
 
-# config :ash,
-#   include_embedded_source_by_default?: false,
-#   show_keysets_for_all_actions?: false,
-#   default_page_type: :keyset,
-#   policies: [no_filter_static_forbidden_reads?: false],
-#   allow_forbidden_field_for_relationships_by_default?: true
-
-# config :spark,
-#   formatter: [
-#     remove_parens?: true,
-#     "Ash.Resource": [
-#       section_order: [
-#         :admin,
-#         :authentication,
-#         :tokens,
-#         :postgres,
-#         :resource,
-#         :code_interface,
-#         :actions,
-#         :policies,
-#         :pub_sub,
-#         :preparations,
-#         :changes,
-#         :validations,
-#         :multitenancy,
-#         :attributes,
-#         :relationships,
-#         :calculations,
-#         :aggregates,
-#         :identities
-#       ]
-#     ],
-#     "Ash.Domain": [
-#       section_order: [:admin, :resources, :policies, :authorization, :domain, :execution]
-#     ]
-#   ]
-config :elixir_template,
-  token_signing_secret: System.get_env("TOKEN_SIGNING_SECRET")
+config :spark,
+  formatter: [
+    remove_parens?: true,
+    "Ash.Resource": [
+      section_order: [
+        :admin,
+        :authentication,
+        :tokens,
+        :postgres,
+        :resource,
+        :code_interface,
+        :actions,
+        :policies,
+        :pub_sub,
+        :preparations,
+        :changes,
+        :validations,
+        :multitenancy,
+        :attributes,
+        :relationships,
+        :calculations,
+        :aggregates,
+        :identities
+      ]
+    ],
+    "Ash.Domain": [
+      section_order: [:admin, :resources, :policies, :authorization, :domain, :execution]
+    ]
+  ]
 
 config :elixir_template,
   ecto_repos: [ElixirTemplate.Repo],
-  generators: [timestamp_type: :utc_datetime]
-
-# Configure your database
-config :elixir_template, ElixirTemplate.Repo,
-  url: System.get_env("DATABASE_URL"),
-  stacktrace: true,
-  show_sensitive_data_on_connection_error: config_env() != :prod,
-  pool_size: 10
+  generators: [timestamp_type: :utc_datetime],
+  ash_domains: [ElixirTemplate.Accounts]
 
 # Configures the endpoint
 config :elixir_template, ElixirTemplateWeb.Endpoint,
@@ -68,7 +58,7 @@ config :elixir_template, ElixirTemplateWeb.Endpoint,
     layout: false
   ],
   pubsub_server: ElixirTemplate.PubSub,
-  live_view: [signing_salt: "xwUqkBg1"]
+  live_view: [signing_salt: "KjVbassY"]
 
 # Configures the mailer
 #

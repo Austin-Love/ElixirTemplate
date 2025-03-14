@@ -53,7 +53,7 @@ defmodule ElixirTemplateWeb do
   def live_view do
     quote do
       use Phoenix.LiveView,
-        layout: {ElixirTemplateWeb.Layouts, :app}
+        layout: {ElixirTemplateWeb.Layouts, :live}
 
       unquote(html_helpers())
     end

@@ -1,10 +1,8 @@
 import Config
 
+# Configure your database
 config :elixir_template, ElixirTemplate.Repo,
-  username: "postgres",
-  password: "postgres",
-  hostname: "localhost",
-  database: "elixir_template_dev",
+  stacktrace: true,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
 
@@ -14,14 +12,14 @@ config :elixir_template, ElixirTemplate.Repo,
 # The watchers configuration can be used to run external
 # watchers to your application. For example, we can use it
 # to bundle .js and .css sources.
+# Binding to loopback ipv4 address prevents access from other machines.
 config :elixir_template, ElixirTemplateWeb.Endpoint,
-  # Binding to loopback ipv4 address prevents access from other machines.
   # Change to `ip: {0, 0, 0, 0}` to allow access from other machines.
   http: [ip: {0, 0, 0, 0}, port: 4000],
   check_origin: false,
   code_reloader: true,
   debug_errors: true,
-  secret_key_base: "+NetVVzn7iRYAUp5x8p4B9CAe1QQp5vBVGHNJu7biKDU2GnP2f1pObOxLUaLSIW+",
+  secret_key_base: "TOl06cmGmgHg1/3ZSa1sSG14kCvBu9YgiwSS7BZ74kU9c7e1amlmWTCuu8ZSHjcm",
   watchers: [
     esbuild: {Esbuild, :install_and_run, [:elixir_template, ~w(--sourcemap=inline --watch)]},
     tailwind: {Tailwind, :install_and_run, [:elixir_template, ~w(--watch)]}
@@ -63,7 +61,7 @@ config :elixir_template, ElixirTemplateWeb.Endpoint,
 # Enable dev routes for dashboard and mailbox
 config :elixir_template,
   dev_routes: true,
-  token_signing_secret: "WrgrxE+Eq9Ie/n/fn0sLZ1gayWTlYYfN"
+  token_signing_secret: "pQzI8qx1KaFHmhh0t8W70C+L6ABY4GTo"
 
 # Do not include metadata nor timestamps in development logs
 config :logger, :console, format: "[$level] $message\n"

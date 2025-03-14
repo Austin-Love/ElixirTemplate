@@ -2,16 +2,6 @@
   "attributes": [
     {
       "allow_nil?": false,
-      "default": "fragment(\"(now() AT TIME ZONE 'utc')\")",
-      "generated?": false,
-      "primary_key?": false,
-      "references": null,
-      "size": null,
-      "source": "created_at",
-      "type": "utc_datetime_usec"
-    },
-    {
-      "allow_nil?": false,
       "default": "nil",
       "generated?": false,
       "primary_key?": true,
@@ -67,7 +57,7 @@
       "primary_key?": false,
       "references": null,
       "size": null,
-      "source": "inserted_at",
+      "source": "created_at",
       "type": "utc_datetime_usec"
     },
     {
@@ -86,7 +76,7 @@
   "custom_indexes": [],
   "custom_statements": [],
   "has_create_action": true,
-  "hash": "56B5EC0A18561032F8336DB275B2E0FE7BE323353E283102B5D77E6CD1208C84",
+  "hash": "EE9814FE74868ABE2D15F47B751B200060EC8547F1280BC8CDD5FD9190806277",
   "identities": [],
   "multitenancy": {
     "attribute": null,

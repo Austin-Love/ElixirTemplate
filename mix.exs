@@ -43,11 +43,6 @@ defmodule ElixirTemplate.MixProject do
       {:ash_phoenix, "~> 2.0"},
       {:sourceror, "~> 1.7", only: [:dev, :test]},
       {:ash, "~> 3.0"},
-      # {:ash_phoenix, "~> 2.0"},
-      # {:ash_postgres, "~> 2.0"},
-      # {:ash_admin, "~> 0.13"},
-      # {:ash_authentication, "~> 4.0"},
-      # {:ash_authentication_phoenix, "~> 2.0"},
       {:bcrypt_elixir, "~> 3.0"},
       {:simple_sat, "~> 0.1.3"},
       {:phoenix, "~> 1.7.14"},
@@ -137,7 +132,8 @@ defmodule ElixirTemplate.MixProject do
       {:timex, "~> 3.7"},
       {:poison, "~> 3.0"},
       {:hackney, "~> 1.9"},
-      {:igniter, "~> 0.5", only: [:dev, :test]}
+      {:igniter, "~> 0.5", only: [:dev, :test]},
+      {:mishka_chelekom, "~> 0.0.3", only: :dev}
     ]
   end
 

@@ -7,7 +7,7 @@ defmodule ElixirTemplateWeb.Endpoint do
   @session_options [
     store: :cookie,
     key: "_elixir_template_key",
-    signing_salt: "dGc1MzDi",
+    signing_salt: "npaLEI5P",
     same_site: "Lax"
   ]
 

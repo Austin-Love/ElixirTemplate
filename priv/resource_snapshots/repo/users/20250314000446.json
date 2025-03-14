@@ -1,6 +1,16 @@
 {
   "attributes": [
     {
+      "allow_nil?": true,
+      "default": "nil",
+      "generated?": false,
+      "primary_key?": false,
+      "references": null,
+      "size": null,
+      "source": "confirmed_at",
+      "type": "utc_datetime_usec"
+    },
+    {
       "allow_nil?": false,
       "default": "fragment(\"gen_random_uuid()\")",
       "generated?": false,
@@ -19,6 +29,16 @@
       "size": null,
       "source": "email",
       "type": "citext"
+    },
+    {
+      "allow_nil?": true,
+      "default": "nil",
+      "generated?": false,
+      "primary_key?": false,
+      "references": null,
+      "size": null,
+      "source": "hashed_password",
+      "type": "text"
     }
   ],
   "base_filter": null,
@@ -26,7 +46,7 @@
   "custom_indexes": [],
   "custom_statements": [],
   "has_create_action": true,
-  "hash": "9AB31C184A31B5D0248CB78FF98E0F73AC2C3899E1EB3BE0F26B0845FF6088AE",
+  "hash": "8FE649D11FFF6A5F363D7D0178C2755392B8BF5B0B3DA58D58D612E1302C4348",
   "identities": [
     {
       "all_tenants?": false,
