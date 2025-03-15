@@ -1,4 +1,3 @@
-
 defmodule ElixirTemplateWeb.NavLive do
   import Phoenix.LiveView
   use Phoenix.Component
@@ -7,10 +6,12 @@ defmodule ElixirTemplateWeb.NavLive do
   alias ElixirTemplate.{ProfileLive, SettingsLive}
 
   def on_mount(:default, _params, _session, socket) do
-
     if connected?(socket) do
       # subscribe to topics
     end
+
+    IO.puts("Nav Live")
+    socket = assign(socket, :links, [])
 
     socket =
       case socket.assigns[:current_user] do

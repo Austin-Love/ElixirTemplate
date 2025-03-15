@@ -19,6 +19,7 @@
     </:list>
   </.navbar>
 </header>
-<main>
+<main class="p-0 min-h-full min-w-full mx-auto content-start flex-col justify-center gap-4 flex-1">
+  <.flash_group flash={@flash} />
   <% @inner_content %>
 </main>

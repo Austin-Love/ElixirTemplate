@@ -3,7 +3,7 @@ defmodule ElixirTemplate.Accounts.User do
     otp_app: :elixir_template,
     domain: ElixirTemplate.Accounts,
     authorizers: [Ash.Policy.Authorizer],
-    extensions: [AshAuthentication],
+    extensions: [AshAuthentication, AshPhoenix],
     data_layer: AshPostgres.DataLayer
 
   authentication do
@@ -65,14 +65,9 @@ defmodule ElixirTemplate.Accounts.User do
       prepare AshAuthentication.Preparations.FilterBySubject
     end
 
-    update :change_username do
-      argument :username, :string, allow_nil?: false
-
-    end
-
-    update :change_email do
-      argument :email, :string, allow_nil?: false
-
+    update :change do
+      argument :username, :string, allow_nil?: true
+      argument :email, :string, allow_nil?: true
     end
 
     update :change_password do
@@ -279,7 +274,7 @@ defmodule ElixirTemplate.Accounts.User do
     uuid_primary_key :id
 
     attribute :username, :ci_string do
-      allow_nil? false
+      allow_nil? true
       public? true
     end
 
@@ -295,6 +290,6 @@ defmodule ElixirTemplate.Accounts.User do
 
   identities do
     identity :unique_email, [:email]
-    identity :unique_username, [:username]
+    identity :unique_username, [:username], eager_check?: true
   end
 end

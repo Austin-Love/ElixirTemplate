@@ -25,7 +25,7 @@ defmodule ElixirTemplateWeb.Router do
     pipe_through :browser
 
     ash_authentication_live_session :optional_routes,
-    on_mount: [{ElixirTemplateWeb.LiveUserAuth, :live_user_optional}, ElixirTemplateWeb.NavLive] do
+      on_mount: [{ElixirTemplateWeb.LiveUserAuth, :live_user_optional}, ElixirTemplateWeb.NavLive] do
       # in each liveview, add one of the following at the top of the module:
       #
       # If an authenticated user must be present:
@@ -40,7 +40,7 @@ defmodule ElixirTemplateWeb.Router do
     end
 
     ash_authentication_live_session :authenticated_routes,
-    on_mount: [{ElixirTemplateWeb.LiveUserAuth, :live_user_required}, ElixirTemplateWeb.NavLive] do
+      on_mount: [{ElixirTemplateWeb.LiveUserAuth, :live_user_required}, ElixirTemplateWeb.NavLive] do
       # in each liveview, add one of the following at the top of the module:
       #
       # If an authenticated user must be present:

@@ -9,7 +9,7 @@ defmodule ElixirTemplate.Repo.Migrations.Username do
 
   def up do
     alter table(:users) do
-      add :username, :citext, null: false
+      add :username, :text, null: true
     end
 
     create unique_index(:users, [:username], name: "users_unique_username_index")

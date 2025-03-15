@@ -1,5 +1,5 @@
 defmodule ElixirTemplate.Accounts do
-  use Ash.Domain, otp_app: :elixir_template, extensions: [AshAdmin.Domain]
+  use Ash.Domain, otp_app: :elixir_template, extensions: [AshAdmin.Domain, AshPhoenix]
 
   admin do
     show? true
@@ -7,6 +7,13 @@ defmodule ElixirTemplate.Accounts do
 
   resources do
     resource ElixirTemplate.Accounts.Token
-    resource ElixirTemplate.Accounts.User
+
+    resource ElixirTemplate.Accounts.User do
+      define :change_password,
+        action: :change_password,
+        args: [:password, :password_confirmation, :current_password]
+
+      define :change, action: :change, args: [:email, :username]
+    end
   end
 end
