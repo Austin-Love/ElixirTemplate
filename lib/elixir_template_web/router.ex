@@ -53,6 +53,10 @@ defmodule ElixirTemplateWeb.Router do
       # on_mount {ElixirTemplateWeb.LiveUserAuth, :live_no_user}
       live "/settings", SettingsLive
     end
+  end
+
+  scope "/", ElixirTemplateWeb do
+    pipe_through :browser
 
     auth_routes AuthController, ElixirTemplate.Accounts.User, path: "/auth"
     sign_out_route AuthController

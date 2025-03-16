@@ -56,7 +56,7 @@ defmodule ElixirTemplate.MixProject do
       {:floki, ">= 0.30.0"},
       {:phoenix_live_dashboard, "~> 0.8.3"},
       {:esbuild, "~> 0.8", runtime: Mix.env() in [:dev, :kind]},
-      {:tailwind, "~> 0.2", runtime: Mix.env() in [:dev, :kind]},
+      {:tailwind, "~> 0.3", runtime: Mix.env() in [:dev, :kind]},
       {:heroicons,
        github: "tailwindlabs/heroicons",
        tag: "v2.1.1",
@@ -105,7 +105,7 @@ defmodule ElixirTemplate.MixProject do
       # Generate module docs as an HTML file for easier reading by running "mix docs"
       {:ex_doc, "~> 0.25", only: [:kind, :dev], runtime: false},
       {:cloak, "~> 1.1"},
-      {:styler, "~> 0.11", only: [:dev, :test, :kind], runtime: false},
+      {:styler, "~> 1.0", only: [:dev, :test, :kind], runtime: false},
       {:ecto_psql_extras, "~> 0.7"},
       # Telemetry for prometheus
       {:telemetry_metrics_prometheus_core, "~> 1.1"},
@@ -130,7 +130,6 @@ defmodule ElixirTemplate.MixProject do
        tag: "opentelemetry-telemetry-v1.1.2",
        sparse: "instrumentation/opentelemetry_finch"},
       {:timex, "~> 3.7"},
-      {:poison, "~> 3.0"},
       {:hackney, "~> 1.9"},
       {:igniter, "~> 0.5", only: [:dev, :test]},
       {:mishka_chelekom, "~> 0.0.3", only: :dev}

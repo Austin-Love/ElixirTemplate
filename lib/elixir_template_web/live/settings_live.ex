@@ -11,40 +11,45 @@ defmodule ElixirTemplateWeb.SettingsLive do
 
   def render(assigns) do
     ~H"""
-    <div>
-      HEYYYY
-    </div>
-    <.form_wrapper phx-change="validate_change" phx-submit="submit_change" for={@change_form}>
-      <input type="hidden" field={@change_form[:id]} readonly />
-      <.email_field field={@change_form[:email]} />
-      <.input_field field={@change_form[:username]} />
+    <%!-- <div class="max-w-2xl flex flex-col"> --%>
+    <.form_wrapper
+      phx-change="validate_change"
+      phx-submit="submit_change"
+      color="secondary"
+      for={@change_form}
+      variant="shadow"
+      size="extra_small"
+      class="border-2 p-4 max-w-2xl"
+    >
+      <.email_field field={@change_form[:email]} name={:email} label="Change Email" />
+      <.input_field field={@change_form[:username]} label="Change UserName" />
       <.button type="submit" icon="hero-play">Save Changes</.button>
     </.form_wrapper>
     <.divider />
-    <%!-- <.form_wrapper phx-change="validate_password" phx-submit="submit_password" for={@password_form}>
+    <.form_wrapper
+      phx-change="validate_password"
+      phx-submit="submit_password"
+      for={@password_form}
+      variant="shadow "
+      size="large"
+    >
       <.password_field show_password field={@password_form[:current_password]} />
       <.password_field show_password field={@password_form[:password]} />
       <.password_field show_password field={@password_form[:password_confirmation]} />
       <.button type="submit" icon="hero-play">Save Changes</.button>
-    </.form_wrapper> --%>
+    </.form_wrapper>
+    <%!-- </div> --%>
     """
   end
 
   def mount(_params, _session, socket) do
     current_user = socket.assigns.current_user
 
-    IO.inspect(current_user, label: "Settings Live")
-
     socket =
       assign(socket,
-        password_form: %{} |> to_form(),
-        change_form: %{} |> to_form()
+        password_form: ElixirTemplate.Accounts.form_to_change_password(current_user) |> to_form(),
+        change_form: ElixirTemplate.Accounts.form_to_change(current_user) |> to_form()
       )
-
-    # assign(socket,
-    #   password_form: ElixirTemplate.Accounts.form_to_change_password(current_user) |> to_form(),
-    #   change_form: ElixirTemplate.Accounts.form_to_change(current_user) |> to_form()
-    # )
 
     {:ok, socket}
   end

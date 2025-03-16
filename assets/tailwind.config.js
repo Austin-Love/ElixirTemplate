@@ -10,7 +10,8 @@ module.exports = {
     "../deps/ash_authentication_phoenix/**/*.*ex",
     "./js/**/*.js",
     "../lib/elixir_template_web.ex",
-    "../lib/elixir_template_web/**/*.*ex"
+    "../lib/elixir_template_web/**/*.*ex",
+     "../deps/ash_authentication_phoenix/**/*.*ex"
   ],
   theme: {
     extend: {
