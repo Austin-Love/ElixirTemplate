@@ -13,7 +13,7 @@ defmodule ElixirTemplate.Accounts do
         action: :change_password,
         args: [:password, :password_confirmation, :current_password]
 
-      define :change, action: :change, args: [:email, :username]
+      define :change, action: :change
     end
   end
 end

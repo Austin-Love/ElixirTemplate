@@ -53,7 +53,9 @@ defmodule ElixirTemplateWeb do
   def live_view do
     quote do
       use Phoenix.LiveView,
-        layout: {ElixirTemplateWeb.Layouts, :live}
+        layout: {ElixirTemplateWeb.Layouts, :live},
+        container:
+          {:div, class: "relative min-h-dvh min-w-dvw flex flex-col align-center bg-gray-800"}
 
       unquote(html_helpers())
     end
