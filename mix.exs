@@ -216,19 +216,8 @@ defmodule ElixirTemplate.MixProject do
   end
 
   def calculate_threshold do
-    # Increase this cap to 80% if ctf gets funded
     max_threshold = 60
 
-    day_we_start_counting = ~D[2025-02-28]
-    diff = Date.diff(Date.utc_today(), day_we_start_counting)
-
-    if(diff > 0) do
-      # increase our test coverage threshold by 10% every month, up to max_threshold.
-      months_since_starting = div(diff, 30)
-
-      min(20 + 10 * months_since_starting, max_threshold)
-    else
-      0
-    end
+    0
   end
 end
