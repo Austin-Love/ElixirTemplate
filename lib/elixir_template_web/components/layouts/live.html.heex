@@ -1,5 +1,5 @@
-<header class=" pb-4 drop-shadow-lg">
-  <.navbar id="root-nav-bar" variant="shadow" color="natural" class=" backdrop-blur-lg bg-red-500">
+<header class="pb-4 drop-shadow-lg">
+  <.navbar id="root-nav-bar" variant="shadow" color="natural" class="backdrop-blur-lg bg-primaryBg-light dark:bg-primaryBg-dark border-b border-neutral-200 dark:border-neutral-800">
     <:start_content>
       <%= if(@current_user) do %>
         <.link href={~p"/sign-out"}>
@@ -22,7 +22,7 @@
     </:list>
   </.navbar>
 </header>
-<main class="p-0 min-h-full min-w-full mx-auto content-start flex-col justify-center gap-4 flex-1 ">
+<main class="p-0 min-h-full min-w-full mx-auto content-start flex-col justify-center gap-4 flex-1">
   <%!-- <div class="p-0 min-h-full min-w-full mx-auto content-start flex-col justify-center gap-4 flex-1"> --%>
   <ElixirTemplateWeb.CoreComponents.flash_group flash={@flash} />
   {@inner_content}

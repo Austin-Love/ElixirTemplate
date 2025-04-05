@@ -6,6 +6,7 @@ const fs = require("fs")
 const path = require("path")
 
 module.exports = {
+  darkMode: 'class',
   content: [
     "../deps/ash_authentication_phoenix/**/*.*ex",
     "./js/**/*.js",
@@ -17,6 +18,73 @@ module.exports = {
     extend: {
       colors: {
         brand: "#FD4F00",
+        // Primary color - Deep Purple
+        primary: {
+          50: '#f5f3ff',
+          100: '#ede9fe',
+          200: '#ddd6fe',
+          300: '#c4b5fd',
+          400: '#a78bfa',
+          500: '#8b5cf6',
+          600: '#7c3aed',
+          700: '#6d28d9',
+          800: '#5b21b6',
+          900: '#4c1d95',
+          950: '#2e1065',
+        },
+        // Secondary color - Teal
+        secondary: {
+          50: '#f0fdfa',
+          100: '#ccfbf1',
+          200: '#99f6e4',
+          300: '#5eead4',
+          400: '#2dd4bf',
+          500: '#14b8a6',
+          600: '#0d9488',
+          700: '#0f766e',
+          800: '#115e59',
+          900: '#134e4a',
+          950: '#042f2e',
+        },
+        // Neutral color - Slate
+        neutral: {
+          50: '#f8fafc',
+          100: '#f1f5f9',
+          200: '#e2e8f0',
+          300: '#cbd5e1',
+          400: '#94a3b8',
+          500: '#64748b',
+          600: '#475569',
+          700: '#334155',
+          800: '#1e293b',
+          900: '#0f172a',
+          950: '#020617',
+        },
+        // Theme colors
+        primaryBg: {
+          light: '#ffffff',
+          dark: '#0f172a', // neutral-900
+        },
+        secondaryBg: {
+          light: '#f8fafc', // neutral-50
+          dark: '#1e293b', // neutral-800
+        },
+        primaryText: {
+          light: '#0f172a', // neutral-900
+          dark: '#f8fafc', // neutral-50
+        },
+        secondaryText: {
+          light: '#475569', // neutral-600
+          dark: '#cbd5e1', // neutral-300
+        },
+        primaryAccent: {
+          light: '#7c3aed', // primary-600
+          dark: '#8b5cf6', // primary-500
+        },
+        secondaryAccent: {
+          light: '#0d9488', // secondary-600
+          dark: '#14b8a6', // secondary-500
+        },
       }
     },
   },

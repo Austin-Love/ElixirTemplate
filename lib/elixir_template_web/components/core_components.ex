@@ -50,7 +50,7 @@ defmodule ElixirTemplateWeb.CoreComponents do
       data-cancel={JS.exec(@on_cancel, "phx-remove")}
       class="relative z-50 hidden"
     >
-      <div id={"#{@id}-bg"} class="bg-zinc-50/90 fixed inset-0 transition-opacity" aria-hidden="true" />
+      <div id={"#{@id}-bg"} class="bg-secondaryBg-light/90 dark:bg-secondaryBg-dark/90 fixed inset-0 transition-opacity" aria-hidden="true" />
       <div
         class="fixed inset-0 overflow-y-auto"
         aria-labelledby={"#{@id}-title"}
@@ -66,13 +66,13 @@ defmodule ElixirTemplateWeb.CoreComponents do
               phx-window-keydown={JS.exec("data-cancel", to: "##{@id}")}
               phx-key="escape"
               phx-click-away={JS.exec("data-cancel", to: "##{@id}")}
-              class="shadow-zinc-700/10 ring-zinc-700/10 relative hidden rounded-2xl bg-white p-14 shadow-lg ring-1 transition"
+              class="shadow-neutral-700/10 ring-neutral-700/10 relative hidden rounded-2xl bg-primaryBg-light dark:bg-primaryBg-dark text-primaryText-light dark:text-primaryText-dark p-14 shadow-lg ring-1 transition"
             >
               <div class="absolute top-6 right-5">
                 <button
                   phx-click={JS.exec("data-cancel", to: "##{@id}")}
                   type="button"
-                  class="-m-3 flex-none p-3 opacity-20 hover:opacity-40"
+                  class="-m-3 flex-none p-3 opacity-20 hover:opacity-40 text-primaryText-light dark:text-primaryText-dark"
                   aria-label={gettext("close")}
                 >
                   <.icon name="hero-x-mark-solid" class="h-5 w-5" />
@@ -116,18 +116,18 @@ defmodule ElixirTemplateWeb.CoreComponents do
       role="alert"
       class={[
         "fixed top-2 right-2 mr-2 w-80 sm:w-96 z-50 rounded-lg p-3 ring-1",
-        @kind == :info && "bg-emerald-50 text-emerald-800 ring-emerald-500 fill-cyan-900",
-        @kind == :error && "bg-rose-50 text-rose-900 shadow-md ring-rose-500 fill-rose-900"
+        @kind == :info && "bg-secondary-50 dark:bg-secondary-900/30 text-secondary-800 dark:text-secondary-200 ring-secondary-500 fill-secondary-900 dark:fill-secondary-200",
+        @kind == :error && "bg-rose-50 dark:bg-rose-900/30 text-rose-900 dark:text-rose-200 shadow-md ring-rose-500 fill-rose-900 dark:fill-rose-200"
       ]}
       {@rest}
     >
-      <p :if={@title} class="flex items-center gap-1.5 text-sm font-semibold leading-6">
+      <p :if={@title} class="flex items-center gap-1.5 text-sm font-semibold leading-6 text-secondary-800 dark:text-secondary-200">
         <.icon :if={@kind == :info} name="hero-information-circle-mini" class="h-4 w-4" />
         <.icon :if={@kind == :error} name="hero-exclamation-circle-mini" class="h-4 w-4" />
         {@title}
       </p>
-      <p class="mt-2 text-sm leading-5">{msg}</p>
-      <button type="button" class="group absolute top-1 right-1 p-2" aria-label={gettext("close")}>
+      <p class="mt-2 text-sm leading-5 text-secondary-700 dark:text-secondary-300">{msg}</p>
+      <button type="button" class="group absolute top-1 right-1 p-2 text-secondary-800 dark:text-secondary-200" aria-label={gettext("close")}>
         <.icon name="hero-x-mark-solid" class="h-5 w-5 opacity-40 group-hover:opacity-70" />
       </button>
     </div>
@@ -231,7 +231,7 @@ defmodule ElixirTemplateWeb.CoreComponents do
     <button
       type={@type}
       class={[
-        "phx-submit-loading:opacity-75 rounded-lg bg-zinc-900 hover:bg-zinc-700 py-2 px-3",
+        "phx-submit-loading:opacity-75 rounded-lg bg-primaryAccent-light dark:bg-primaryAccent-dark hover:bg-primary-500 dark:hover:bg-primary-400 py-2 px-3",
         "text-sm font-semibold leading-6 text-white active:text-white/80",
         @class
       ]}
@@ -318,7 +318,7 @@ defmodule ElixirTemplateWeb.CoreComponents do
           name={@name}
           value="true"
           checked={@checked}
-          class="rounded border-zinc-300 text-zinc-900 focus:ring-0"
+          class="rounded border-neutral-300 dark:border-neutral-700 text-primaryAccent-light dark:text-primaryAccent-dark focus:ring-primaryAccent-light dark:focus:ring-primaryAccent-dark"
           {@rest}
         />
         {@label}
@@ -377,9 +377,8 @@ defmodule ElixirTemplateWeb.CoreComponents do
         id={@id}
         value={Phoenix.HTML.Form.normalize_value(@type, @value)}
         class={[
-          "mt-2 block w-full rounded-lg text-zinc-900 focus:ring-0 sm:text-sm sm:leading-6",
-          @errors == [] && "border-zinc-300 focus:border-zinc-400",
-          @errors != [] && "border-rose-400 focus:border-rose-400"
+          "block w-full rounded-lg text-primaryText-light dark:text-primaryText-dark shadow-sm ring-1 ring-inset ring-neutral-300 dark:ring-neutral-700 bg-primaryBg-light dark:bg-primaryBg-dark focus:ring-2 focus:ring-primaryAccent-light dark:focus:ring-primaryAccent-dark sm:text-sm sm:leading-6",
+          @errors != [] && "ring-rose-400 dark:ring-rose-400 focus:ring-rose-400 dark:focus:ring-rose-400"
         ]}
         {@rest}
       />
@@ -396,7 +395,7 @@ defmodule ElixirTemplateWeb.CoreComponents do
 
   def label(assigns) do
     ~H"""
-    <label for={@for} class="block text-sm font-semibold leading-6 text-zinc-800">
+    <label for={@for} class="block text-sm font-semibold leading-6 text-primaryText-light dark:text-primaryText-dark">
       {render_slot(@inner_block)}
     </label>
     """
@@ -429,10 +428,10 @@ defmodule ElixirTemplateWeb.CoreComponents do
     ~H"""
     <header class={[@actions != [] && "flex items-center justify-between gap-6", @class]}>
       <div>
-        <h1 class="text-lg font-semibold leading-8 text-zinc-800">
+        <h1 class="text-lg font-semibold leading-8 text-primaryText-light dark:text-primaryText-dark">
           {render_slot(@inner_block)}
         </h1>
-        <p :if={@subtitle != []} class="mt-2 text-sm leading-6 text-zinc-600">
+        <p :if={@subtitle != []} class="mt-2 text-sm leading-6 text-secondaryText-light dark:text-secondaryText-dark">
           {render_slot(@subtitle)}
         </p>
       </div>
@@ -536,10 +535,10 @@ defmodule ElixirTemplateWeb.CoreComponents do
   def list(assigns) do
     ~H"""
     <div class="mt-14">
-      <dl class="-my-4 divide-y divide-zinc-100">
+      <dl class="-my-4 divide-y divide-neutral-200 dark:divide-neutral-800">
         <div :for={item <- @item} class="flex gap-4 py-4 text-sm leading-6 sm:gap-8">
-          <dt class="w-1/4 flex-none text-zinc-500">{item.title}</dt>
-          <dd class="text-zinc-700">{render_slot(item)}</dd>
+          <dt class="w-1/4 flex-none text-secondaryText-light dark:text-secondaryText-dark">{item.title}</dt>
+          <dd class="text-primaryText-light dark:text-primaryText-dark">{render_slot(item)}</dd>
         </div>
       </dl>
     </div>
@@ -561,7 +560,7 @@ defmodule ElixirTemplateWeb.CoreComponents do
     <div class="mt-16">
       <.link
         navigate={@navigate}
-        class="text-sm font-semibold leading-6 text-zinc-900 hover:text-zinc-700"
+        class="text-sm font-semibold leading-6 text-primaryText-light dark:text-primaryText-dark hover:text-primaryAccent-light dark:hover:text-primaryAccent-dark"
       >
         <.icon name="hero-arrow-left-solid" class="h-3 w-3" />
         {render_slot(@inner_block)}

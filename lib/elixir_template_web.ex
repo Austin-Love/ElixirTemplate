@@ -55,7 +55,7 @@ defmodule ElixirTemplateWeb do
       use Phoenix.LiveView,
         layout: {ElixirTemplateWeb.Layouts, :live},
         container:
-          {:div, class: "relative min-h-dvh min-w-dvw flex flex-col align-center bg-gray-800"}
+          {:div, class: "relative min-h-dvh min-w-dvw flex flex-col align-center bg-primaryBg-light dark:bg-primaryBg-dark text-primaryText-light dark:text-primaryText-dark"}
 
       unquote(html_helpers())
     end
