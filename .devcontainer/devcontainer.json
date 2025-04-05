@@ -8,6 +8,18 @@
     "source=profile,target=/root,type=volume",
     "target=/root/.vscode-server,type=volume"
   ],
+  // Explicitly define the ports to forward
+  "forwardPorts": [4000, 5432],
+  "portsAttributes": {
+    "4000": {
+      "label": "Phoenix App",
+      "onAutoForward": "notify"
+    },
+    "5432": {
+      "label": "PostgreSQL",
+      "onAutoForward": "notify"
+    }
+  },
   "customizations": {
     // Configure properties specific to VS Code.
     "vscode": {
@@ -15,11 +27,11 @@
       "settings": {
         "[elixir]": {
           "editor.formatOnSave": true,
-          "editor.defaultFormatter": "JakeBecker.elixir-ls"
+          "editor.defaultFormatter": "jakebecker.elixir-ls"
         },
         "[phoenix-heex]": {
           "editor.formatOnSave": true,
-          "editor.defaultFormatter": "JakeBecker.elixir-ls"
+          "editor.defaultFormatter": "jakebecker.elixir-ls"
         },
         // "elixirLS.projectDir": "minimap",
         "elixirLS.fetchDeps": true,
@@ -88,10 +100,10 @@
         // Language Support //
         // Elixir
         "pgourlain.erlang",
-        "JakeBecker.elixir-ls",
+        "jakebecker.elixir-ls",
         "phoenixframework.phoenix",
         // Terraform
-        "HashiCorp.terraform",
+        "hashicorp.terraform",
         // Powershell
         "ms-vscode.powershell",
         // JS/CSS/HTML

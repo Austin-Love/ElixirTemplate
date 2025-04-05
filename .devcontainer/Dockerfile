@@ -1,9 +1,9 @@
-FROM elixir:1.18.2-alpine AS runner
+FROM elixir:1.18.2-slim AS runner
 
 
 FROM runner
-RUN apk update && \
-  apk --no-cache --update add \
+RUN apt-get update && \
+  apt-get install -y --no-install-recommends \
   make \
   g++ \
   git \
@@ -11,8 +11,10 @@ RUN apk update && \
   curl \
   npm \
   bash \
+  procps \
+  ca-certificates \
   inotify-tools && \
-  rm -rf /var/cache/apk/*
+  rm -rf /var/lib/apt/lists/*
 
 
 RUN curl -L https://fly.io/install.sh | sh && \
@@ -28,4 +30,4 @@ RUN mix do local.hex --force, local.rebar --force
 
 
 RUN mkdir /app
-WORKDIR /app 
+WORKDIR /app
