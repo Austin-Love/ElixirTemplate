@@ -146,6 +146,10 @@ defmodule ElixirTemplate.Accounts.User do
         allow_nil? false
       end
 
+      argument :username, :ci_string do
+        allow_nil? true
+      end
+
       argument :password, :string do
         description "The proposed password for the user, in plain text."
         allow_nil? false
@@ -161,6 +165,9 @@ defmodule ElixirTemplate.Accounts.User do
 
       # Sets the email from the argument
       change set_attribute(:email, arg(:email))
+
+      # Sets the username from the argument
+      change set_attribute(:username, arg(:username))
 
       # Hashes the provided password
       change AshAuthentication.Strategy.Password.HashPasswordChange
@@ -269,6 +276,16 @@ defmodule ElixirTemplate.Accounts.User do
       authorize_if expr(id == ^actor(:id))
     end
 
+    # Allow registration
+    policy action_type(:create) do
+      authorize_if always()
+    end
+
+    policy action_type(:read) do
+      authorize_if always()
+    end
+
+    # Default policy for other actions
     policy always() do
       forbid_if always()
     end

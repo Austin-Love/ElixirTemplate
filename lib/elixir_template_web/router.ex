@@ -61,17 +61,14 @@ defmodule ElixirTemplateWeb.Router do
     auth_routes AuthController, ElixirTemplate.Accounts.User, path: "/auth"
     sign_out_route AuthController
 
-    # Remove these if you'd like to use your own authentication views
-    sign_in_route register_path: "/register",
-                  reset_path: "/reset",
-                  auth_routes_prefix: "/auth",
-                  on_mount: [{ElixirTemplateWeb.LiveUserAuth, :live_no_user}],
-                  overrides: [
-                    ElixirTemplateWeb.AuthOverrides,
-                    AshAuthentication.Phoenix.Overrides.Default
-                  ]
+    # Custom authentication routes - only accessible when not signed in
+    ash_authentication_live_session :unauthenticated_routes,
+      on_mount: [{ElixirTemplateWeb.LiveUserAuth, :live_no_user},  ElixirTemplateWeb.NavLive] do
+      live "/sign-in", Auth.SignInLive, :index
+      live "/register", Auth.RegisterLive, :index
+    end
 
-    # Remove this if you do not want to use the reset password feature
+    # Keep the reset password feature
     reset_route auth_routes_prefix: "/auth",
                 overrides: [
                   ElixirTemplateWeb.AuthOverrides,
