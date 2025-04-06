@@ -4,17 +4,6 @@ defmodule ElixirTemplateWeb.Auth.RegisterLive do
   import Phoenix.Component
   alias ElixirTemplateWeb.CoreComponents
 
-  def mount(_params, _session, socket) do
-    socket =
-      socket
-      |> assign(:page_title, "Register")
-      |> assign(:password_form, AuthHelpers.password_registration_form(socket) |> to_form())
-      |> assign(:magic_link_form, AuthHelpers.magic_link_form(socket) |> to_form())
-      |> assign(:active_tab, "password")
-      |> assign(:error_message, nil)
-
-    {:ok, socket}
-  end
 
   def render(assigns) do
     ~H"""
@@ -28,33 +17,38 @@ defmodule ElixirTemplateWeb.Auth.RegisterLive do
 
       <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
         <div class="mb-4 border-b border-neutral-200 dark:border-neutral-700">
-          <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" role="tablist">
-            <li class="mr-2" role="presentation">
-              <button
-                class={["inline-block p-4 border-b-2 rounded-t-lg hover:text-primaryAccent-light dark:hover:text-primaryAccent-dark", @active_tab == "password" && "border-primaryAccent-light dark:border-primaryAccent-dark text-primaryAccent-light dark:text-primaryAccent-dark"]}
-                phx-click="switch-tab"
-                phx-value-tab="password"
-                type="button"
+          <ul class="flex justify-around flex-wrap flex-grow mb-px text-sm font-medium text-center w-full" role="tablist">
+            <li class="flex-grow text-center w-1/2" role="presentation">
+              <.link
+                class={["w-full inline-block p-4 border-b-2 rounded-t-lg hover:text-primaryAccent-light dark:hover:text-primaryAccent-dark", @active_tab == :password && "border-primaryAccent-light dark:border-primaryAccent-dark text-primaryAccent-light dark:text-primaryAccent-dark"]}
+                patch={~p"/register/password"}
               >
                 Email & Password
-              </button>
+              </.link>
             </li>
-            <li class="mr-2" role="presentation">
-              <button
-                class={["inline-block p-4 border-b-2 rounded-t-lg hover:text-primaryAccent-light dark:hover:text-primaryAccent-dark", @active_tab == "magic_link" && "border-primaryAccent-light dark:border-primaryAccent-dark text-primaryAccent-light dark:text-primaryAccent-dark"]}
-                phx-click="switch-tab"
-                phx-value-tab="magic_link"
-                type="button"
+            <li class="flex-grow text-center w-1/2" role="presentation">
+              <.link
+                class={["w-full inline-block p-4 border-b-2 rounded-t-lg hover:text-primaryAccent-light dark:hover:text-primaryAccent-dark", @active_tab == :magic_link && "border-primaryAccent-light dark:border-primaryAccent-dark text-primaryAccent-light dark:text-primaryAccent-dark"]}
+                patch={~p"/register/magic-link"}
               >
                 Magic Link
-              </button>
+              </.link>
             </li>
           </ul>
         </div>
 
         <div class="tab-content">
-          <div class={["tab-pane", @active_tab != "password" && "hidden"]}>
-            <.form for={@password_form} phx-change="validate_password" phx-submit="register_with_password">
+          <div class={["tab-pane", @active_tab != :password && "hidden"]}>
+            <.form
+              :if={@active_tab == :password}
+              :let={f}
+              for={@password_form}
+              phx-change="validate_password"
+
+              phx-trigger-action={@trigger_action}
+              action={~p"/auth/user/password/register"}
+              method="POST"
+            >
               <div class="space-y-4">
                 <CoreComponents.input
                   field={@password_form[:email]}
@@ -110,8 +104,16 @@ defmodule ElixirTemplateWeb.Auth.RegisterLive do
             </.form>
           </div>
 
-          <div class={["tab-pane", @active_tab != "magic_link" && "hidden"]}>
-            <.form for={@magic_link_form} phx-change="validate_magic_link" phx-submit="request_magic_link">
+          <div class={["tab-pane", @active_tab != :magic_link && "hidden"]}>
+            <.form
+              :let={f}
+              :if={@active_tab == :magic_link}
+              for={@magic_link_form}
+              phx-change="validate_magic_link"
+              phx-trigger-action={@trigger_action}
+              action={~p"/auth/user/magic_link/request"}
+              method="POST"
+            >
               <div class="space-y-4">
                 <CoreComponents.input
                   field={@magic_link_form[:email]}
@@ -144,53 +146,41 @@ defmodule ElixirTemplateWeb.Auth.RegisterLive do
 
         <p class="mt-10 text-center text-sm text-secondaryText-light dark:text-secondaryText-dark">
           Already have an account?
-          <a href="/sign-in" class="font-semibold leading-6 text-primaryAccent-light dark:text-primaryAccent-dark hover:text-primary-500 dark:hover:text-primary-400">
+          <.link navigate={~p"/sign-in"} class="font-semibold leading-6 text-primaryAccent-light dark:text-primaryAccent-dark hover:text-primary-500 dark:hover:text-primary-400">
             Sign in
-          </a>
+          </.link>
         </p>
       </div>
     </div>
     """
   end
 
-  def handle_event("switch-tab", %{"tab" => tab}, socket) do
-    {:noreply, assign(socket, :active_tab, tab)}
+  def mount(_params, _session, socket) do
+    socket =
+      socket
+      |> assign(:page_title, "Register")
+      |> assign(:password_form, AuthHelpers.password_registration_form(socket) |> to_form())
+      |> assign(:magic_link_form, AuthHelpers.magic_link_form(socket) |> to_form())
+      |> assign(:active_tab, :password)
+      |> assign(:error_message, nil)
+      |> assign(:trigger_action, false)
+
+    {:ok, socket}
   end
 
-  def handle_event("validate_password", %{"form" => form_params}, socket) do
-    form = AshPhoenix.Form.validate(socket.assigns.password_form.source, %{"form" => form_params}) |> to_form()
-    {:noreply, assign(socket, :password_form, form)}
+  def handle_params(params, uri, socket) do
+    active_tab = socket.assigns.live_action || :password
+
+    {:noreply, assign(socket, :active_tab, active_tab)}
   end
 
-  def handle_event("validate_magic_link", %{"form" => form_params}, socket) do
-    form = AshPhoenix.Form.validate(socket.assigns.magic_link_form.source, %{"form" => form_params}) |> to_form()
-    {:noreply, assign(socket, :magic_link_form, form)}
+  def handle_event("validate_password", %{"user" => params}, socket) do
+    form = socket.assigns.password_form |> AshPhoenix.Form.validate(params, errors: false)
+    {:noreply, assign(socket, :password_form, to_form(form))}
   end
 
-  def handle_event("register_with_password", params, socket) do
-    IO.inspect(params, label: "params")
-    case AshPhoenix.Form.submit(socket.assigns.password_form.source, params: params["form"]) do
-      {:ok, result} ->
-        # Redirect to auth controller which will handle the session
-        {:noreply,
-         socket
-         |> redirect(to: ~p"/auth/user/password/success?token=#{result.token}")}
-
-      {:error, form} ->
-        {:noreply, socket |> assign(:password_form, to_form(form)) |> assign(:error_message, "Registration failed")}
-    end
-  end
-
-  def handle_event("request_magic_link", params, socket) do
-    case AshPhoenix.Form.submit(socket.assigns.magic_link_form.source, params: params["form"]) do
-      {:ok, _result} ->
-        {:noreply,
-         socket
-         |> put_flash(:info, "Magic link sent! Check your email to complete registration.")
-         |> redirect(to: ~p"/")}
-
-      {:error, form} ->
-        {:noreply, socket |> assign(:magic_link_form, to_form(form)) |> assign(:error_message, "Failed to send magic link")}
-    end
+  def handle_event("validate_magic_link", %{"user" => params}, socket) do
+    form = socket.assigns.magic_link_form |> AshPhoenix.Form.validate(params, errors: false)
+    {:noreply, assign(socket, :magic_link_form, to_form(form))}
   end
 end

@@ -4,59 +4,47 @@ defmodule ElixirTemplateWeb.Auth.SignInLive do
   import Phoenix.Component
   alias ElixirTemplateWeb.CoreComponents
 
-  def mount(_params, _session, socket) do
-    socket =
-      socket
-      |> assign(:page_title, "Sign In")
-      |> assign(:password_form, AuthHelpers.password_sign_in_form(socket) |> to_form())
-      |> assign(:magic_link_form, AuthHelpers.magic_link_form(socket) |> to_form())
-      |> assign(:active_tab, "password")
-      |> assign(:error_message, nil)
-
-    {:ok, socket}
-  end
-
   def render(assigns) do
     ~H"""
     <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
       <div class="sm:mx-auto sm:w-full sm:max-w-sm">
-        <img class="mx-auto h-10 w-auto" src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600" alt="Your Company">
+        <img class="mx-auto h-10 w-auto" src={~p"/images/logo.svg"} alt="Your Company">
         <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-primaryText-light dark:text-primaryText-dark">Sign in to your account</h2>
       </div>
 
       <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
         <div class="mb-4 border-b border-gray-200 dark:border-gray-700">
           <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" role="tablist">
-            <li class="mr-2" role="presentation">
-              <button
-                class={[
-                  "inline-block p-4 border-b-2 rounded-t-lg",
-                  @active_tab == "password" && "text-primaryAccent-light dark:text-primaryAccent-dark border-primaryAccent-light dark:border-primaryAccent-dark"
-                ]}
-                phx-click="switch-tab"
-                phx-value-tab="password"
+            <li class="flex-grow text-center w-1/2" role="presentation">
+              <.link
+                class={["w-full inline-block p-4 border-b-2 rounded-t-lg hover:text-primaryAccent-light dark:hover:text-primaryAccent-dark", @active_tab == :password && "border-primaryAccent-light dark:border-primaryAccent-dark text-primaryAccent-light dark:text-primaryAccent-dark"]}
+                patch={~p"/sign-in/password"}
               >
                 Password
-              </button>
+              </.link>
             </li>
-            <li class="mr-2" role="presentation">
-              <button
-                class={[
-                  "inline-block p-4 border-b-2 rounded-t-lg",
-                  @active_tab == "magic_link" && "text-primaryAccent-light dark:text-primaryAccent-dark border-primaryAccent-light dark:border-primaryAccent-dark"
-                ]}
-                phx-click="switch-tab"
-                phx-value-tab="magic_link"
+            <li class="flex-grow text-center w-1/2" role="presentation">
+              <.link
+                class={["w-full inline-block p-4 border-b-2 rounded-t-lg hover:text-primaryAccent-light dark:hover:text-primaryAccent-dark", @active_tab == :magic_link && "border-primaryAccent-light dark:border-primaryAccent-dark text-primaryAccent-light dark:text-primaryAccent-dark"]}
+                patch={~p"/sign-in/magic-link"}
               >
                 Magic Link
-              </button>
+              </.link>
             </li>
           </ul>
         </div>
 
         <div class="tab-content">
-          <div class={["tab-pane", @active_tab != "password" && "hidden"]}>
-            <.form for={@password_form} phx-change="validate_password" phx-submit="sign_in_with_password">
+          <div class={["tab-pane", @active_tab != :password && "hidden"]}>
+            <.form
+              :if={@active_tab == :password}
+              :let={f}
+              for={@password_form}
+              phx-change="validate_password"
+              phx-trigger-action={@trigger_action}
+              action={~p"/auth/user/password/sign_in"}
+              method="POST"
+            >
               <div class="space-y-4">
                 <CoreComponents.input
                   field={@password_form[:email]}
@@ -66,7 +54,7 @@ defmodule ElixirTemplateWeb.Auth.SignInLive do
                   autocomplete="email"
                   class="block w-full rounded-md border-0 py-1.5 text-primaryText-light dark:text-primaryText-dark shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primaryAccent-light dark:focus:ring-primaryAccent-dark sm:text-sm sm:leading-6 bg-white dark:bg-gray-800"
                 />
-                
+
                 <CoreComponents.input
                   field={@password_form[:password]}
                   type="password"
@@ -75,13 +63,13 @@ defmodule ElixirTemplateWeb.Auth.SignInLive do
                   autocomplete="current-password"
                   class="block w-full rounded-md border-0 py-1.5 text-primaryText-light dark:text-primaryText-dark shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primaryAccent-light dark:focus:ring-primaryAccent-dark sm:text-sm sm:leading-6 bg-white dark:bg-gray-800"
                 />
-                
+
                 <div class="mt-2 text-sm text-red-600 dark:text-red-400">
                   <%= if @error_message do %>
                     <p><%= @error_message %></p>
                   <% end %>
                 </div>
-                
+
                 <div class="mt-6">
                   <button
                     type="submit"
@@ -94,8 +82,16 @@ defmodule ElixirTemplateWeb.Auth.SignInLive do
             </.form>
           </div>
 
-          <div class={["tab-pane", @active_tab != "magic_link" && "hidden"]}>
-            <.form for={@magic_link_form} phx-change="validate_magic_link" phx-submit="request_magic_link">
+          <div class={["tab-pane", @active_tab != :magic_link && "hidden"]}>
+            <.form
+              :if={@active_tab == :magic_link}
+              :let={f}
+              for={@magic_link_form}
+              phx-change="validate_magic_link"
+              phx-trigger-action={@trigger_action}
+              action={~p"/auth/user/magic_link/request"}
+              method="POST"
+            >
               <div class="space-y-4">
                 <CoreComponents.input
                   field={@magic_link_form[:email]}
@@ -106,13 +102,13 @@ defmodule ElixirTemplateWeb.Auth.SignInLive do
                   autocomplete="email"
                   class="block w-full rounded-md border-0 py-1.5 text-primaryText-light dark:text-primaryText-dark shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primaryAccent-light dark:focus:ring-primaryAccent-dark sm:text-sm sm:leading-6 bg-white dark:bg-gray-800"
                 />
-                
+
                 <div class="mt-2 text-sm text-red-600 dark:text-red-400">
                   <%= if @error_message do %>
                     <p><%= @error_message %></p>
                   <% end %>
                 </div>
-                
+
                 <div class="mt-6">
                   <button
                     type="submit"
@@ -128,52 +124,45 @@ defmodule ElixirTemplateWeb.Auth.SignInLive do
 
         <p class="mt-10 text-center text-sm text-secondaryText-light dark:text-secondaryText-dark">
           Not a member?
-          <a href="/register" class="font-semibold leading-6 text-primaryAccent-light dark:text-primaryAccent-dark hover:text-primary-500 dark:hover:text-primary-400">
+          <.link navigate={~p"/register"} class="font-semibold leading-6 text-primaryAccent-light dark:text-primaryAccent-dark hover:text-primary-500 dark:hover:text-primary-400">
             Register now
-          </a>
+          </.link>
         </p>
       </div>
     </div>
     """
   end
 
+    def mount(_params, _session, socket) do
+    socket =
+      socket
+      |> assign(:page_title, "Sign In")
+      |> assign(:password_form, AuthHelpers.password_sign_in_form(socket) |> to_form())
+      |> assign(:magic_link_form, AuthHelpers.magic_link_form(socket) |> to_form())
+      |> assign(:active_tab, :password)
+      |> assign(:error_message, nil)
+      |> assign(:trigger_action, false)
+
+    {:ok, socket}
+  end
+
+  def handle_params(params, uri, socket) do
+    active_tab = socket.assigns.live_action || :password
+
+    {:noreply, assign(socket, :active_tab, active_tab)}
+  end
+
   def handle_event("switch-tab", %{"tab" => tab}, socket) do
     {:noreply, assign(socket, :active_tab, tab)}
   end
 
-  def handle_event("validate_password", %{"form" => form_params}, socket) do
-    form = AshPhoenix.Form.validate(socket.assigns.password_form.source, %{"form" => form_params}) |> to_form()
-    {:noreply, assign(socket, :password_form, form)}
+  def handle_event("validate_password", %{"user" => params}, socket) do
+    form = socket.assigns.password_form |> AshPhoenix.Form.validate(params, errors: false)
+    {:noreply, assign(socket, :password_form, to_form(form))}
   end
 
-  def handle_event("validate_magic_link", %{"form" => form_params}, socket) do
-    form = AshPhoenix.Form.validate(socket.assigns.magic_link_form.source, %{"form" => form_params}) |> to_form()
-    {:noreply, assign(socket, :magic_link_form, form)}
-  end
-
-  def handle_event("sign_in_with_password", params, socket) do
-    case AshPhoenix.Form.submit(socket.assigns.password_form.source, params: params["form"]) do
-      {:ok, result} ->
-        # Redirect to auth controller which will handle the session
-        {:noreply,
-         socket
-         |> redirect(to: ~p"/auth/user/password/success?token=#{result.token}")}
-
-      {:error, form} ->
-        {:noreply, socket |> assign(:password_form, to_form(form)) |> assign(:error_message, "Invalid email or password")}
-    end
-  end
-
-  def handle_event("request_magic_link", params, socket) do
-    case AshPhoenix.Form.submit(socket.assigns.magic_link_form.source, params: params["form"]) do
-      {:ok, _result} ->
-        {:noreply,
-         socket
-         |> put_flash(:info, "Magic link sent! Check your email.")
-         |> redirect(to: ~p"/")}
-        
-      {:error, form} ->
-        {:noreply, socket |> assign(:magic_link_form, to_form(form)) |> assign(:error_message, "Failed to send magic link")}
-    end
+  def handle_event("validate_magic_link", %{"user" => params}, socket) do
+    form = socket.assigns.magic_link_form |> AshPhoenix.Form.validate(params, errors: false)
+    {:noreply, assign(socket, :magic_link_form, to_form(form))}
   end
 end

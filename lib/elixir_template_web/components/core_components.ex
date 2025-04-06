@@ -115,7 +115,7 @@ defmodule ElixirTemplateWeb.CoreComponents do
       phx-click={JS.push("lv:clear-flash", value: %{key: @kind}) |> hide("##{@id}")}
       role="alert"
       class={[
-        "fixed top-2 right-2 mr-2 w-80 sm:w-96 z-50 rounded-lg p-3 ring-1",
+        "fixed top-[57px] right-2 mr-2 w-80 sm:w-96 z-50 rounded-lg p-3 ring-1",
         @kind == :info && "bg-secondary-50 dark:bg-secondary-900/30 text-secondary-800 dark:text-secondary-200 ring-secondary-500 fill-secondary-900 dark:fill-secondary-200",
         @kind == :error && "bg-rose-50 dark:bg-rose-900/30 text-rose-900 dark:text-rose-200 shadow-md ring-rose-500 fill-rose-900 dark:fill-rose-200"
       ]}
@@ -146,7 +146,7 @@ defmodule ElixirTemplateWeb.CoreComponents do
 
   def flash_group(assigns) do
     ~H"""
-    <div id={@id}>
+    <div id={@id}  class="pt-[57px]">
       <.flash kind={:info} title={gettext("Success!")} flash={@flash} />
       <.flash kind={:error} title={gettext("Error!")} flash={@flash} />
       <.flash

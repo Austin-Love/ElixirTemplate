@@ -5,12 +5,21 @@ x-phoenix: &phoenix
   links:
     - db-elixir_template
   volumes:
-    - ../:/app:cached
+    - ../:/app:delegated
     # For Windows and Mac compatibility with Fly CLI
     - type: bind
       source: ${USERPROFILE:-$HOME}/.fly
       target: /root/.fly
-      consistency: cached
+      consistency: delegated
+    # Git configuration
+    - type: bind
+      source: ${USERPROFILE:-$HOME}/.gitconfig
+      target: /root/.gitconfig
+      consistency: delegated
+    - type: bind
+      source: ${USERPROFILE:-$HOME}/.ssh
+      target: /root/.ssh
+      consistency: delegated
   env_file:
     - path: .env
       required: false

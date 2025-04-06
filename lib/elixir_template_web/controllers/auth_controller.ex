@@ -22,10 +22,13 @@ defmodule ElixirTemplateWeb.AuthController do
   end
 
   def failure(conn, activity, reason) do
+    # Log the authentication failure details
+    require Logger
+    Logger.error("Authentication failure: #{inspect(activity)}, reason: #{inspect(reason)}")
+    
     message =
       case {activity, reason} do
-        {_,
-         %AshAuthentication.Errors.AuthenticationFailed{
+        {_, %AshAuthentication.Errors.AuthenticationFailed{
            caused_by: %Ash.Error.Forbidden{
              errors: [%AshAuthentication.Errors.CannotConfirmUnconfirmedUser{}]
            }
@@ -34,9 +37,34 @@ defmodule ElixirTemplateWeb.AuthController do
           You have already signed in another way, but have not confirmed your account.
           You can confirm your account using the link we sent to you, or by resetting your password.
           """
-
-        _ ->
+          
+        # Invalid credentials (wrong password)
+        {{:password, :sign_in}, %AshAuthentication.Errors.AuthenticationFailed{
+           caused_by: %Ash.Error.Invalid{errors: errors}
+         }} ->
+          detailed_errors = inspect(errors)
+          Logger.error("Invalid credentials: #{detailed_errors}")
           "Incorrect email or password"
+          
+        # User not found
+        {{:password, :sign_in}, %AshAuthentication.Errors.AuthenticationFailed{
+           caused_by: %Ash.Error.Query.NotFound{}
+         }} ->
+          Logger.error("User not found during sign in attempt")
+          "Incorrect email or password"
+          
+        # Registration errors
+        {{:password, :register}, %AshAuthentication.Errors.AuthenticationFailed{
+           caused_by: %Ash.Error.Invalid{errors: errors}
+         }} ->
+          detailed_errors = inspect(errors)
+          Logger.error("Registration error: #{detailed_errors}")
+          "Registration failed. Please check your information and try again."
+          
+        # Catch all other errors
+        _ ->
+          Logger.error("Unhandled authentication error: #{inspect(reason)}")
+          "Authentication failed. Please try again or contact support."
       end
 
     conn

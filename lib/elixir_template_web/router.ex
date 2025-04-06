@@ -64,8 +64,13 @@ defmodule ElixirTemplateWeb.Router do
     # Custom authentication routes - only accessible when not signed in
     ash_authentication_live_session :unauthenticated_routes,
       on_mount: [{ElixirTemplateWeb.LiveUserAuth, :live_no_user},  ElixirTemplateWeb.NavLive] do
-      live "/sign-in", Auth.SignInLive, :index
-      live "/register", Auth.RegisterLive, :index
+      live "/sign-in", Auth.SignInLive
+      live "/sign-in/password", Auth.SignInLive, :password
+      live "/sign-in/magic-link", Auth.SignInLive, :magic_link
+      live "/register", Auth.RegisterLive
+      live "/register/password", Auth.RegisterLive, :password
+      live "/register/magic-link", Auth.RegisterLive, :magic_link
+
     end
 
     # Keep the reset password feature

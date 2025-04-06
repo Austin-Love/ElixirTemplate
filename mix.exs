@@ -13,7 +13,8 @@ defmodule ElixirTemplate.MixProject do
       deps: deps(),
       preferred_cli_env: [
         "test.watch": :test
-      ]
+      ],
+      listeners: [Phoenix.CodeReloader]
     ]
   end
 
@@ -45,7 +46,7 @@ defmodule ElixirTemplate.MixProject do
       {:ash, "~> 3.0"},
       {:bcrypt_elixir, "~> 3.0"},
       {:simple_sat, "~> 0.1.3"},
-      {:phoenix, "~> 1.7.14"},
+      {:phoenix, "~> 1.8.0-rc.0", override: true},
       {:phoenix_ecto, "~> 4.5"},
       {:ecto_sql, "~> 3.10"},
       {:postgrex, ">= 0.0.0"},
