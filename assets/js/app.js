@@ -25,14 +25,44 @@ import topbar from "../vendor/topbar"
 // Import hooks
 import ThemeToggle from "./hooks/theme_toggle"
 
+// Theme management functions
+const applyTheme = (theme) => {
+  if (theme === 'dark' || 
+      (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    document.documentElement.classList.add('dark');
+  } else {
+    document.documentElement.classList.remove('dark');
+  }
+}
+
+const storeTheme = (theme) => {
+  if (theme === 'system') {
+    localStorage.removeItem('color-theme');
+  } else {
+    localStorage.setItem('color-theme', theme);
+  }
+}
+
+// Create hooks object with ThemeToggle and our theme handlers
+const hooks = {
+  ThemeToggle
+}
+
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 let liveSocket = new LiveSocket("/live", Socket, {
   longPollFallbackMs: 2500,
   params: {_csrf_token: csrfToken},
-  hooks: {
-    ThemeToggle
-  }
+  hooks: hooks
 })
+
+// Handle theme events from the server
+liveSocket.on("apply-theme", ({theme}) => {
+  applyTheme(theme);
+});
+
+liveSocket.on("store-theme", ({theme}) => {
+  storeTheme(theme);
+});
 
 // Show progress bar on live navigation and form submits
 topbar.config({barColors: {0: "#29d"}, shadowColor: "rgba(0, 0, 0, .3)"})
@@ -52,9 +82,21 @@ liveSocket.connect()
 window.liveSocket = liveSocket
 
 // Apply the user's theme preference on initial page load
-if (localStorage.getItem('color-theme') === 'dark' || 
-    (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+const storedTheme = localStorage.getItem('color-theme');
+if (storedTheme === 'dark' || 
+    (!storedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
   document.documentElement.classList.add('dark');
 } else {
   document.documentElement.classList.remove('dark');
 }
+
+// Listen for system preference changes if using system theme
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+  if (!localStorage.getItem('color-theme')) {
+    if (e.matches) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }
+});

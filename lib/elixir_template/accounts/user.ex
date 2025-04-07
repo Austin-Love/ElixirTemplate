@@ -2,7 +2,7 @@ defmodule ElixirTemplate.Accounts.User do
   use Ash.Resource,
     otp_app: :elixir_template,
     domain: ElixirTemplate.Accounts,
-    # authorizers: [Ash.Policy.Authorizer],
+    authorizers: [Ash.Policy.Authorizer],
     extensions: [AshAuthentication, AshPhoenix],
     data_layer: AshPostgres.DataLayer
 
@@ -68,6 +68,7 @@ defmodule ElixirTemplate.Accounts.User do
     update :change do
       argument :username, :string, allow_nil?: true
       argument :email, :string, allow_nil?: true
+      argument :theme_preference, :string, allow_nil?: true
     end
 
     update :change_password do
@@ -267,29 +268,29 @@ defmodule ElixirTemplate.Accounts.User do
     end
   end
 
-  # policies do
-  #   bypass AshAuthentication.Checks.AshAuthenticationInteraction do
-  #     authorize_if always()
-  #   end
+  policies do
+    bypass AshAuthentication.Checks.AshAuthenticationInteraction do
+      authorize_if always()
+    end
 
-  #   policy action_type(:update) do
-  #     authorize_if expr(id == ^actor(:id))
-  #   end
+    policy action_type(:update) do
+      authorize_if expr(id == ^actor(:id))
+    end
 
-  #   # Allow registration
-  #   policy action_type(:create) do
-  #     authorize_if always()
-  #   end
+    # Allow registration
+    policy action_type(:create) do
+      authorize_if always()
+    end
 
-  #   policy action_type(:read) do
-  #     authorize_if always()
-  #   end
+    policy action_type(:read) do
+      authorize_if always()
+    end
 
-  #   # # Default policy for other actions
-  #   policy always() do
-  #     authorize_if always()
-  #   end
-  # end
+    # # Default policy for other actions
+    policy always() do
+      authorize_if always()
+    end
+  end
 
   attributes do
     uuid_primary_key :id
@@ -301,6 +302,13 @@ defmodule ElixirTemplate.Accounts.User do
 
     attribute :email, :ci_string do
       allow_nil? false
+      public? true
+    end
+
+    attribute :theme_preference, :string do
+      allow_nil? true
+      default "system"
+      constraints [match: ~r/^(light|dark|system)$/]
       public? true
     end
 
