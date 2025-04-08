@@ -1,9 +1,7 @@
 defmodule ElixirTemplateWeb.Router do
   use ElixirTemplateWeb, :router
 
-  use AshAuthentication.Phoenix.Router
-
-  import AshAuthentication.Plug.Helpers
+  import ElixirTemplateWeb.UserAuth
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -12,79 +10,56 @@ defmodule ElixirTemplateWeb.Router do
     plug :put_root_layout, html: {ElixirTemplateWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
-    plug :load_from_session
+    plug :fetch_current_scope_for_user
+    # plug :fetch_current_user
   end
 
   pipeline :api do
     plug :accepts, ["json"]
-    plug :load_from_bearer
-    plug :set_actor, :user
   end
 
+  # Public routes accessible to all users
   scope "/", ElixirTemplateWeb do
     pipe_through :browser
 
-    ash_authentication_live_session :optional_routes,
-      on_mount: [{ElixirTemplateWeb.LiveUserAuth, :live_user_optional}, ElixirTemplateWeb.NavLive] do
-      # in each liveview, add one of the following at the top of the module:
-      #
-      # If an authenticated user must be present:
-      # on_mount {ElixirTemplateWeb.LiveUserAuth, :live_user_required}
-      #
-      # If an authenticated user *may* be present:
-      # on_mount {ElixirTemplateWeb.LiveUserAuth, :live_user_optional}
-      #
-      # If an authenticated user must *not* be present:
-      # on_mount {ElixirTemplateWeb.LiveUserAuth, :live_no_user}
-      live "/", HomeLive
-    end
+    get "/", PageController, :home
+  end
 
-    ash_authentication_live_session :authenticated_routes,
-      on_mount: [{ElixirTemplateWeb.LiveUserAuth, :live_user_required}, ElixirTemplateWeb.NavLive] do
-      # in each liveview, add one of the following at the top of the module:
-      #
-      # If an authenticated user must be present:
-      # on_mount {ElixirTemplateWeb.LiveUserAuth, :live_user_required}
-      #
-      # If an authenticated user *may* be present:
-      # on_mount {ElixirTemplateWeb.LiveUserAuth, :live_user_optional}
-      #
-      # If an authenticated user must *not* be present:
-      # on_mount {ElixirTemplateWeb.LiveUserAuth, :live_no_user}
-      live "/settings", SettingsLive
-    end
+  # Routes that require authentication
+  scope "/", ElixirTemplateWeb do
+    # pipe_through [:browser, :require_authenticated_user]
+
+    # live_session :authenticated_routes,
+    #   on_mount: [{ElixirTemplateWeb.UserAuth, :ensure_authenticated}] do
+    #   live "/settings", SettingsLive, :edit
+    #   # Add other authenticated routes here
+    # end
+  end
+
+  # Routes that are only accessible to unauthenticated users
+  scope "/", ElixirTemplateWeb do
+    # pipe_through [:browser, :redirect_if_user_is_authenticated]
+
+    # live_session :unauthenticated_routes,
+    #   on_mount: [{ElixirTemplateWeb.UserAuth, :redirect_if_user_is_authenticated}] do
+    #   live "/users/register", UserRegistrationLive, :new
+    #   live "/users/log_in", UserLoginLive, :new
+    #   live "/users/reset_password", UserForgotPasswordLive, :new
+    #   live "/users/reset_password/:token", UserResetPasswordLive, :edit
+    # end
+
+    # post "/users/log_in", UserSessionController, :create
   end
 
   scope "/", ElixirTemplateWeb do
-    pipe_through :browser
+    # pipe_through [:browser]
 
-    auth_routes AuthController, ElixirTemplate.Accounts.User, path: "/auth"
-    sign_out_route AuthController
-
-    # Custom authentication routes - only accessible when not signed in
-    ash_authentication_live_session :unauthenticated_routes,
-      on_mount: [{ElixirTemplateWeb.LiveUserAuth, :live_no_user},  ElixirTemplateWeb.NavLive] do
-      live "/sign-in", Auth.SignInLive
-      live "/sign-in/password", Auth.SignInLive, :password
-      live "/sign-in/magic-link", Auth.SignInLive, :magic_link
-      live "/register", Auth.RegisterLive
-      live "/register/password", Auth.RegisterLive, :password
-      live "/register/magic-link", Auth.RegisterLive, :magic_link
-
-    end
-
-    # Keep the reset password feature
-    reset_route auth_routes_prefix: "/auth",
-                overrides: [
-                  ElixirTemplateWeb.AuthOverrides,
-                  AshAuthentication.Phoenix.Overrides.Default
-                ]
+    # delete "/users/log_out", UserSessionController, :delete
+    # get "/users/confirm", UserConfirmationController, :new
+    # post "/users/confirm", UserConfirmationController, :create
+    # get "/users/confirm/:token", UserConfirmationController, :edit
+    # post "/users/confirm/:token", UserConfirmationController, :update
   end
-
-  # Other scopes may use custom stacks.
-  # scope "/api", ElixirTemplateWeb do
-  #   pipe_through :api
-  # end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
   if Application.compile_env(:elixir_template, :dev_routes) do
@@ -103,13 +78,31 @@ defmodule ElixirTemplateWeb.Router do
     end
   end
 
-  if Application.compile_env(:elixir_template, :dev_routes) do
-    import AshAdmin.Router
+  ## Authentication routes
 
-    scope "/admin" do
-      pipe_through :browser
+  scope "/", ElixirTemplateWeb do
+    pipe_through [:browser, :require_authenticated_user]
 
-      ash_admin "/"
+    live_session :require_authenticated_user,
+      on_mount: [{ElixirTemplateWeb.UserAuth, :require_authenticated}] do
+      live "/users/settings", UserLive.Settings, :edit
+      live "/users/settings/confirm-email/:token", UserLive.Settings, :confirm_email
     end
+
+    post "/users/update-password", UserSessionController, :update_password
+  end
+
+  scope "/", ElixirTemplateWeb do
+    pipe_through [:browser]
+
+    live_session :current_user,
+      on_mount: [{ElixirTemplateWeb.UserAuth, :mount_current_scope}] do
+      live "/users/register", UserLive.Registration, :new
+      live "/users/log-in", UserLive.Login, :new
+      live "/users/log-in/:token", UserLive.Confirmation, :new
+    end
+
+    post "/users/log-in", UserSessionController, :create
+    delete "/users/log-out", UserSessionController, :delete
   end
 end

@@ -17,8 +17,7 @@ defmodule ElixirTemplate.Application do
       # Start a worker by calling: ElixirTemplate.Worker.start_link(arg)
       # {ElixirTemplate.Worker, arg},
       # Start to serve requests, typically the last entry
-      ElixirTemplateWeb.Endpoint,
-      {AshAuthentication.Supervisor, [otp_app: :elixir_template]}
+      ElixirTemplateWeb.Endpoint
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

@@ -1,10 +1,11 @@
 defmodule ElixirTemplate.Repo do
-  use AshPostgres.Repo,
-    otp_app: :elixir_template
+  use Ecto.Repo,
+    otp_app: :elixir_template,
+    adapter: Ecto.Adapters.Postgres
 
   def installed_extensions do
     # Add extensions here, and the migration generator will install them.
-    ["ash-functions", "citext"]
+    ["citext"]
   end
 
   # Don't open unnecessary transactions

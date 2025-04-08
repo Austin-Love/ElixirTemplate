@@ -37,13 +37,6 @@ defmodule ElixirTemplate.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:ash_admin, "~> 0.13"},
-      {:ash_authentication_phoenix, "~> 2.0"},
-      {:ash_authentication, "~> 4.0"},
-      {:ash_postgres, "~> 2.0"},
-      {:ash_phoenix, "~> 2.0"},
-      {:sourceror, "~> 1.7", only: [:dev, :test]},
-      {:ash, "~> 3.0"},
       {:bcrypt_elixir, "~> 3.0"},
       {:simple_sat, "~> 0.1.3"},
       {:phoenix, "~> 1.8.0-rc.0", override: true},
@@ -153,15 +146,15 @@ defmodule ElixirTemplate.MixProject do
         &npm_ci/1,
         "assets.setup",
         "assets.build",
-        "ash.setup",
+        "ecto.setup",
         "compile",
         "run priv/repo/seeds.exs"
       ],
-      "ecto.setup": ["ash.setup", "ash.migrate"],
+      "ecto.setup": ["ecto.create", "ecto.migrate"],
       "ecto.seed": ["run priv/repo/seeds.exs"],
       "user.seed": ["run priv/repo/seeds/user_data_seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
-      test: ["ash.setup --quiet", "test"],
+      test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
       "assets.setup": [
         "tailwind.install --if-missing",
         "esbuild.install --if-missing"
@@ -176,8 +169,7 @@ defmodule ElixirTemplate.MixProject do
       "gen.env": ["deps.get", "gen_env"],
       "gen.lang": [&gen_lang/1],
       "gen.translate": [&gen_translate/1],
-      ugh: [&just_work_please/1],
-      "phx.routes": ["phx.routes", "ash_authentication.phoenix.routes"]
+      ugh: [&just_work_please/1]
     ]
   end
 

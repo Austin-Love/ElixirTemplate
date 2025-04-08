@@ -6,7 +6,6 @@ config :elixir_template, ElixirTemplate.Repo,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
 
-config :ash_authentication, debug_authentication_failures?: true
 
 # For development, we disable any cache and enable
 # debugging and code reloading.

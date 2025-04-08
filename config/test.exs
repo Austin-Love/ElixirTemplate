@@ -1,4 +1,7 @@
 import Config
+
+# Only in tests, remove the complexity from the password hashing algorithm
+config :bcrypt_elixir, :log_rounds, 1
 config :elixir_template, token_signing_secret: "2F0LR37a3uSOB32krDDKlXzE7YCuTj43"
 
 # Configure your database
