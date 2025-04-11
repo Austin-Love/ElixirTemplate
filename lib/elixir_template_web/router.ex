@@ -11,55 +11,22 @@ defmodule ElixirTemplateWeb.Router do
     plug :protect_from_forgery
     plug :put_secure_browser_headers
     plug :fetch_current_scope_for_user
-    # plug :fetch_current_user
   end
 
   pipeline :api do
     plug :accepts, ["json"]
   end
 
-  # Public routes accessible to all users
   scope "/", ElixirTemplateWeb do
     pipe_through :browser
 
     get "/", PageController, :home
   end
 
-  # Routes that require authentication
-  scope "/", ElixirTemplateWeb do
-    # pipe_through [:browser, :require_authenticated_user]
-
-    # live_session :authenticated_routes,
-    #   on_mount: [{ElixirTemplateWeb.UserAuth, :ensure_authenticated}] do
-    #   live "/settings", SettingsLive, :edit
-    #   # Add other authenticated routes here
-    # end
-  end
-
-  # Routes that are only accessible to unauthenticated users
-  scope "/", ElixirTemplateWeb do
-    # pipe_through [:browser, :redirect_if_user_is_authenticated]
-
-    # live_session :unauthenticated_routes,
-    #   on_mount: [{ElixirTemplateWeb.UserAuth, :redirect_if_user_is_authenticated}] do
-    #   live "/users/register", UserRegistrationLive, :new
-    #   live "/users/log_in", UserLoginLive, :new
-    #   live "/users/reset_password", UserForgotPasswordLive, :new
-    #   live "/users/reset_password/:token", UserResetPasswordLive, :edit
-    # end
-
-    # post "/users/log_in", UserSessionController, :create
-  end
-
-  scope "/", ElixirTemplateWeb do
-    # pipe_through [:browser]
-
-    # delete "/users/log_out", UserSessionController, :delete
-    # get "/users/confirm", UserConfirmationController, :new
-    # post "/users/confirm", UserConfirmationController, :create
-    # get "/users/confirm/:token", UserConfirmationController, :edit
-    # post "/users/confirm/:token", UserConfirmationController, :update
-  end
+  # Other scopes may use custom stacks.
+  # scope "/api", ElixirTemplateWeb do
+  #   pipe_through :api
+  # end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
   if Application.compile_env(:elixir_template, :dev_routes) do

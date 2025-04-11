@@ -38,9 +38,7 @@ defmodule ElixirTemplateWeb do
 
   def controller do
     quote do
-      use Phoenix.Controller,
-        formats: [:html, :json],
-        layouts: [html: ElixirTemplateWeb.Layouts]
+      use Phoenix.Controller, formats: [:html, :json]
 
       use Gettext, backend: ElixirTemplateWeb.Gettext
 
@@ -52,10 +50,7 @@ defmodule ElixirTemplateWeb do
 
   def live_view do
     quote do
-      use Phoenix.LiveView,
-        layout: {ElixirTemplateWeb.Layouts, :live},
-        container:
-          {:div, class: "relative min-h-dvh min-w-dvw flex flex-col align-center bg-primaryBg-light dark:bg-primaryBg-dark text-primaryText-light dark:text-primaryText-dark"}
+      use Phoenix.LiveView
 
       unquote(html_helpers())
     end
@@ -90,11 +85,11 @@ defmodule ElixirTemplateWeb do
       # HTML escaping functionality
       import Phoenix.HTML
       # Core UI components
-      # import ElixirTemplateWeb.CoreComponents
-      use ElixirTemplateWeb.Components.MishkaComponents
+      import ElixirTemplateWeb.CoreComponents
 
-      # Shortcut for generating JS commands
+      # Common modules used in templates
       alias Phoenix.LiveView.JS
+      alias ElixirTemplateWeb.Layouts
 
       # Routes generation with the ~p sigil
       unquote(verified_routes())

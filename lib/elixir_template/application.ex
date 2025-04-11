@@ -12,8 +12,6 @@ defmodule ElixirTemplate.Application do
       ElixirTemplate.Repo,
       {DNSCluster, query: Application.get_env(:elixir_template, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: ElixirTemplate.PubSub},
-      # Start the Finch HTTP client for sending emails
-      {Finch, name: ElixirTemplate.Finch},
       # Start a worker by calling: ElixirTemplate.Worker.start_link(arg)
       # {ElixirTemplate.Worker, arg},
       # Start to serve requests, typically the last entry

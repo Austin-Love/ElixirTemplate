@@ -6,85 +6,54 @@ const fs = require("fs")
 const path = require("path")
 
 module.exports = {
-  darkMode: 'class',
   content: [
     "./js/**/*.js",
-    "../lib/elixir_template_web.ex",
-    "../lib/elixir_template_web/**/*.*ex",
+    "../lib/*_web.ex",
+    "../lib/*_web/**/*.*ex"
   ],
   theme: {
     extend: {
       colors: {
         brand: "#FD4F00",
-        // Primary color - Deep Purple
         primary: {
-          50: '#f5f3ff',
-          100: '#ede9fe',
-          200: '#ddd6fe',
-          300: '#c4b5fd',
-          400: '#a78bfa',
-          500: '#8b5cf6',
-          600: '#7c3aed',
-          700: '#6d28d9',
-          800: '#5b21b6',
-          900: '#4c1d95',
-          950: '#2e1065',
+          50: "#eff6ff",
+          100: "#dbeafe",
+          200: "#bfdbfe",
+          300: "#93c5fd",
+          400: "#60a5fa",
+          500: "#3b82f6",
+          600: "#2563eb",
+          700: "#1d4ed8",
+          800: "#1e40af",
+          900: "#1e3a8a",
+          950: "#172554"
         },
-        // Secondary color - Teal
-        secondary: {
-          50: '#f0fdfa',
-          100: '#ccfbf1',
-          200: '#99f6e4',
-          300: '#5eead4',
-          400: '#2dd4bf',
-          500: '#14b8a6',
-          600: '#0d9488',
-          700: '#0f766e',
-          800: '#115e59',
-          900: '#134e4a',
-          950: '#042f2e',
-        },
-        // Neutral color - Slate
-        neutral: {
-          50: '#f8fafc',
-          100: '#f1f5f9',
-          200: '#e2e8f0',
-          300: '#cbd5e1',
-          400: '#94a3b8',
-          500: '#64748b',
-          600: '#475569',
-          700: '#334155',
-          800: '#1e293b',
-          900: '#0f172a',
-          950: '#020617',
-        },
-        // Theme colors
+        // Light mode
         primaryBg: {
-          light: '#ffffff',
-          dark: '#0f172a', // neutral-900
+          light: "#ffffff",
+          dark: "#1e293b"
         },
         secondaryBg: {
-          light: '#f8fafc', // neutral-50
-          dark: '#1e293b', // neutral-800
+          light: "#f1f5f9",
+          dark: "#0f172a"
         },
         primaryText: {
-          light: '#0f172a', // neutral-900
-          dark: '#f8fafc', // neutral-50
+          light: "#0f172a",
+          dark: "#f8fafc"
         },
         secondaryText: {
-          light: '#475569', // neutral-600
-          dark: '#cbd5e1', // neutral-300
+          light: "#64748b",
+          dark: "#94a3b8"
         },
         primaryAccent: {
-          light: '#7c3aed', // primary-600
-          dark: '#8b5cf6', // primary-500
-        },
-        secondaryAccent: {
-          light: '#0d9488', // secondary-600
-          dark: '#14b8a6', // secondary-500
-        },
+          light: "#3b82f6",
+          dark: "#3b82f6"
+        }
+      },
+      borderRadius: {
+        "extra_large": "12px"
       }
-    },
+    }
   },
   plugins: [
     require("@tailwindcss/forms"),
@@ -93,50 +62,48 @@ module.exports = {
     //
     //     <div class="phx-click-loading:animate-ping">
     //
-    plugin(({addVariant}) => addVariant("phx-click-loading", [".phx-click-loading&", ".phx-click-loading &"])),
-    plugin(({addVariant}) => addVariant("phx-submit-loading", [".phx-submit-loading&", ".phx-submit-loading &"])),
-    plugin(({addVariant}) => addVariant("phx-change-loading", [".phx-change-loading&", ".phx-change-loading &"])),
+    plugin(({ addVariant }) => addVariant("phx-no-feedback", [".", "&", ".phx-no-feedback", ".phx-no-feedback &"])),
+    plugin(({ addVariant }) => addVariant("phx-click-loading", [".", "&", ".phx-click-loading", ".phx-click-loading &"])),
+    plugin(({ addVariant }) => addVariant("phx-submit-loading", [".", "&", ".phx-submit-loading", ".phx-submit-loading &"])),
+    plugin(({ addVariant }) => addVariant("phx-change-loading", [".", "&", ".phx-change-loading", ".phx-change-loading &"])),
 
     // Embeds Heroicons (https://heroicons.com) into your app.css bundle
     // See your `CoreComponents.icon/1` for more information.
     //
-    plugin(function({matchComponents, theme}) {
+    plugin(function({ matchComponents, theme }) {
       let iconsDir = path.join(__dirname, "../deps/heroicons/optimized")
       let values = {}
       let icons = [
-        ["", "/24/outline"],
-        ["-solid", "/24/solid"],
-        ["-mini", "/20/solid"],
-        ["-micro", "/16/solid"]
+        ["hero-", "-outline", "24"],
+        ["hero-", "-solid", "24"],
+        ["hero-", "-mini", "20"],
+        ["hero-", "-micro", "16"]
       ]
-      icons.forEach(([suffix, dir]) => {
-        fs.readdirSync(path.join(iconsDir, dir)).forEach(file => {
-          let name = path.basename(file, ".svg") + suffix
-          values[name] = {name, fullPath: path.join(iconsDir, dir, file)}
+      icons.forEach(([prefix, suffix, size]) => {
+        fs.readdirSync(path.join(iconsDir, suffix.replace(/^-/, ""))).forEach(file => {
+          if (file.includes(".svg")) {
+            let name = path.basename(file, ".svg")
+            values[prefix + name + suffix] = { name, fullPath: path.join(iconsDir, suffix.replace(/^-/, ""), file), size }
+          }
         })
       })
       matchComponents({
-        "hero": ({name, fullPath}) => {
-          let content = fs.readFileSync(fullPath).toString().replace(/\r?\n|\r/g, "")
-          let size = theme("spacing.6")
-          if (name.endsWith("-mini")) {
-            size = theme("spacing.5")
-          } else if (name.endsWith("-micro")) {
-            size = theme("spacing.4")
-          }
+        "icon": ({ name, fullPath, size }) => {
+          let content = fs.readFileSync(fullPath).toString().replace(/\r?\n/g, "")
+          let svgSize = size === "16" ? "16" : "20"
           return {
-            [`--hero-${name}`]: `url('data:image/svg+xml;utf8,${content}')`,
-            "-webkit-mask": `var(--hero-${name})`,
-            "mask": `var(--hero-${name})`,
+            [`--icon-size-${svgSize}`]: "1em",
+            "mask-image": `url('data:image/svg+xml;utf8,${content}')`,
             "mask-repeat": "no-repeat",
+            "mask-size": "100%",
             "background-color": "currentColor",
             "vertical-align": "middle",
             "display": "inline-block",
-            "width": size,
-            "height": size
+            "width": `var(--icon-size-${svgSize})`,
+            "height": `var(--icon-size-${svgSize})`
           }
         }
-      }, {values})
+      }, { values })
     })
   ]
 }
