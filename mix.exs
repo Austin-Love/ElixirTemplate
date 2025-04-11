@@ -49,7 +49,7 @@ defmodule ElixirTemplate.MixProject do
       {:phoenix_live_view, "~> 1.0.2", override: true},
       {:floki, ">= 0.30.0"},
       {:phoenix_live_dashboard, "~> 0.8.3"},
-      {:esbuild, "~> 0.8", runtime: Mix.env() in [:dev, :kind]},
+      {:esbuild, "~> 0.9", runtime: Mix.env() in [:dev, :kind]},
       {:tailwind, "~> 0.3", runtime: Mix.env() in [:dev, :kind]},
       {:heroicons,
        github: "tailwindlabs/heroicons",
@@ -125,8 +125,7 @@ defmodule ElixirTemplate.MixProject do
        sparse: "instrumentation/opentelemetry_finch"},
       {:timex, "~> 3.7"},
       {:hackney, "~> 1.9"},
-      {:igniter, "~> 0.5", only: [:dev, :test]},
-      {:mishka_chelekom, "~> 0.0.3", only: :dev}
+      {:igniter, "~> 0.5", only: [:dev, :test]}
     ]
   end
 
