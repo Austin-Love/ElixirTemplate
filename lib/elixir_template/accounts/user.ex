@@ -4,6 +4,7 @@ defmodule ElixirTemplate.Accounts.User do
 
   schema "users" do
     field :email, :string
+    field :username, :string
     field :password, :string, virtual: true, redact: true
     field :hashed_password, :string, redact: true
     field :current_password, :string, virtual: true, redact: true
@@ -30,6 +31,17 @@ defmodule ElixirTemplate.Accounts.User do
     |> validate_email(opts)
   end
 
+  @doc """
+  A user changeset for registering or changing the username.
+
+  It requires the username to be unique.
+  """
+  def username_changeset(user, attrs, opts \\ []) do
+    user
+    |> cast(attrs, [:username])
+    |> validate_username(opts)
+  end
+
   defp validate_email(changeset, opts) do
     changeset =
       changeset
@@ -52,6 +64,24 @@ defmodule ElixirTemplate.Accounts.User do
   defp validate_email_changed(changeset) do
     if get_field(changeset, :email) && get_change(changeset, :email) == nil do
       add_error(changeset, :email, "did not change")
+    else
+      changeset
+    end
+  end
+
+  defp validate_username(changeset, opts) do
+    changeset = 
+      changeset
+      |> validate_required([:username])
+      |> validate_length(:username, min: 3, max: 20)
+      |> validate_format(:username, ~r/^[a-zA-Z0-9_-]+$/, 
+        message: "only letters, numbers, underscores, and hyphens are allowed"
+      )
+    
+    if Keyword.get(opts, :validate_username, true) do
+      changeset
+      |> unsafe_validate_unique(:username, ElixirTemplate.Repo)
+      |> unique_constraint(:username)
     else
       changeset
     end
@@ -129,5 +159,16 @@ defmodule ElixirTemplate.Accounts.User do
   def valid_password?(_, _) do
     Bcrypt.no_user_verify()
     false
+  end
+
+  @doc """
+  Validates the current password otherwise adds an error to the changeset.
+  """
+  def validate_current_password(changeset, password) do
+    if valid_password?(changeset.data, password) do
+      changeset
+    else
+      add_error(changeset, :current_password, "is not valid")
+    end
   end
 end

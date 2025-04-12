@@ -77,7 +77,24 @@ defmodule ElixirTemplate.Accounts do
   def register_user(attrs) do
     %User{}
     |> User.email_changeset(attrs)
+    |> User.username_changeset(attrs)
     |> Repo.insert()
+  end
+
+  @doc """
+  Gets a user by username.
+
+  ## Examples
+
+      iex> get_user_by_username("johndoe")
+      %User{}
+
+      iex> get_user_by_username("unknown")
+      nil
+
+  """
+  def get_user_by_username(username) when is_binary(username) do
+    Repo.get_by(User, username: username)
   end
 
   ## Settings
@@ -112,28 +129,47 @@ defmodule ElixirTemplate.Accounts do
   end
 
   @doc """
-  Updates the user email using the given token.
+  Updates the user email.
 
-  If the token matches, the user email is updated and the token is deleted.
+  The user email is updated and a token is sent to the new email to verify it.
   """
-  def update_user_email(user, token) do
-    context = "change:#{user.email}"
+  def update_user_email(user, attrs, opts \\ []) do
+    changeset =
+      user
+      |> User.email_changeset(attrs, opts)
+      |> User.validate_current_password(attrs.current_password)
 
-    with {:ok, query} <- UserToken.verify_change_email_token_query(token, context),
-         %UserToken{sent_to: email} <- Repo.one(query),
-         {:ok, _} <- Repo.transaction(user_email_multi(user, email, context)) do
-      :ok
-    else
-      _ -> :error
+    case Repo.update(changeset) do
+      {:ok, user} ->
+        if user.email != attrs.email do
+          deliver_user_update_email_instructions(
+            user,
+            user.email,
+            &"#{&1}"
+          )
+        end
+
+        {:ok, user}
+
+      {:error, changeset} ->
+        {:error, changeset}
     end
   end
 
-  defp user_email_multi(user, email, context) do
-    changeset = User.email_changeset(user, %{email: email})
+  @doc """
+  Updates the user username.
+  """
+  def update_user_username(user, attrs, opts \\ []) do
+    user
+    |> User.username_changeset(attrs, opts)
+    |> Repo.update()
+  end
 
-    Ecto.Multi.new()
-    |> Ecto.Multi.update(:user, changeset)
-    |> Ecto.Multi.delete_all(:tokens, UserToken.by_user_and_contexts_query(user, [context]))
+  @doc """
+  Returns an `%Ecto.Changeset{}` for changing the user username.
+  """
+  def change_user_username(user, attrs \\ %{}, opts \\ []) do
+    User.username_changeset(user, attrs, opts)
   end
 
   @doc """

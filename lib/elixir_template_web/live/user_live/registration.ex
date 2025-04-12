@@ -21,12 +21,19 @@ defmodule ElixirTemplateWeb.UserLive.Registration do
 
         <.form for={@form} id="registration_form" phx-submit="save" phx-change="validate">
           <.input
-            field={@form[:email]}
-            type="email"
-            label="Email"
+            field={@form[:username]}
+            type="text"
+            label="Username"
             autocomplete="username"
             required
             phx-mounted={JS.focus()}
+          />
+          <.input
+            field={@form[:email]}
+            type="email"
+            label="Email"
+            autocomplete="email"
+            required
           />
 
           <.button variant="primary" phx-disable-with="Creating account..." class="w-full">
@@ -44,7 +51,12 @@ defmodule ElixirTemplateWeb.UserLive.Registration do
   end
 
   def mount(_params, _session, socket) do
-    changeset = Accounts.change_user_email(%User{})
+    # Create a changeset that combines email and username validation
+    changeset = %User{}
+                |> Accounts.change_user_email()
+                |> Map.put(:action, :validate)
+                |> Ecto.Changeset.cast(%{}, [:username])
+                |> Ecto.Changeset.validate_required([:username])
 
     {:ok, assign_form(socket, changeset), temporary_assigns: [form: nil]}
   end
@@ -72,8 +84,20 @@ defmodule ElixirTemplateWeb.UserLive.Registration do
   end
 
   def handle_event("validate", %{"user" => user_params}, socket) do
-    changeset = Accounts.change_user_email(%User{}, user_params)
-    {:noreply, assign_form(socket, Map.put(changeset, :action, :validate))}
+    # Combine email and username validation
+    email_changeset = Accounts.change_user_email(%User{}, user_params)
+    username_changeset = Accounts.change_user_username(%User{}, user_params)
+    
+    # Merge the changesets
+    changeset = 
+      email_changeset
+      |> Ecto.Changeset.cast(user_params, [:username])
+      |> Ecto.Changeset.validate_required([:username])
+      |> Map.put(:action, :validate)
+      |> Map.put(:errors, email_changeset.errors ++ username_changeset.errors)
+      |> Map.put(:valid?, email_changeset.valid? and username_changeset.valid?)
+    
+    {:noreply, assign_form(socket, changeset)}
   end
 
   defp assign_form(socket, %Ecto.Changeset{} = changeset) do
