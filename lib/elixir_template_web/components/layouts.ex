@@ -24,7 +24,7 @@ defmodule ElixirTemplateWeb.Layouts do
       </div>
       <div class="flex-none">
         <ul class="flex flex-column px-1 space-x-4 items-center">
-          <li>
+          <li :if={@current_scope}>
             <.link navigate={~p"/home"} class="btn btn-ghost">Home</.link>
           </li>
           <li>
