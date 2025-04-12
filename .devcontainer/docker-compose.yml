@@ -5,8 +5,25 @@ x-phoenix: &phoenix
   links:
     - db-elixir_template
   volumes:
-    - ..:/app:cached
-    - $USERPROFILE/.fly:/root/.fly
+    - ../:/app:delegated
+    # For Windows and Mac compatibility with Fly CLI
+    - type: bind
+      source: ${USERPROFILE:-$HOME}/.fly
+      target: /root/.fly
+      consistency: delegated
+    # Git configuration
+    - type: bind
+      source: ${USERPROFILE:-$HOME}/.gitconfig
+      target: /root/.gitconfig
+      consistency: delegated
+    - type: bind
+      source: ${USERPROFILE:-$HOME}/.ssh
+      target: /root/.ssh
+      consistency: delegated
+  env_file:
+    - path: .env
+      required: false
+
   ports:
     - 4000:4000
 
@@ -15,8 +32,6 @@ x-phoenix: &phoenix
     - NODE_ENV=dev
     - DATABASE_URL=postgres://postgres:postgres-elixir_template@postgres-elixir_template/elixir_template
     - PHX_HOST=localhost
-
-
 
 services:
   db-elixir_template:
@@ -30,7 +45,7 @@ services:
       POSTGRES_DB: postgres-elixir_template
       POSTGRES_USER: postgres
     healthcheck:
-      test: nc -z localhost 5432
+      test: pg_isready -U postgres -h localhost
       interval: 10s
       timeout: 5s
       retries: 5
@@ -41,9 +56,7 @@ services:
   devcontainer-elixir_template:
     <<: *phoenix
     container_name: devcontainer-elixir_template
-    command: /bin/sh -c "while sleep 1000; do :; done"
-
-      
+    command: sleep infinity
 
   # app-elixir_template:
   #   <<: *phoenix

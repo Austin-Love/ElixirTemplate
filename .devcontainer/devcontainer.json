@@ -6,11 +6,20 @@
   "mounts": [
     // Persisting user profile
     "source=profile,target=/root,type=volume",
-    "target=/root/.vscode-server,type=volume",
-    // "type=volume,dst=/.config/bin/ -e FLY_CONFIG_DIR=\"/$HOME/.fly/.config\" ghcr.io/superfly/flyctl:latest",
-    // "type=volume,dst=/.config/bin/ -e FLYCTL_INSTALL=\"${FLYCTL_INSTALL:-$HOME/.fly}\" ghcr.io/superfly/flyctl:latest"
-
+    "target=/root/.vscode-server,type=volume"
   ],
+  // Explicitly define the ports to forward
+  "forwardPorts": [4000, 5432],
+  "portsAttributes": {
+    "4000": {
+      "label": "Phoenix App",
+      "onAutoForward": "notify"
+    },
+    "5432": {
+      "label": "PostgreSQL",
+      "onAutoForward": "notify"
+    }
+  },
   "customizations": {
     // Configure properties specific to VS Code.
     "vscode": {
@@ -18,11 +27,11 @@
       "settings": {
         "[elixir]": {
           "editor.formatOnSave": true,
-          "editor.defaultFormatter": "JakeBecker.elixir-ls"
+          "editor.defaultFormatter": "jakebecker.elixir-ls"
         },
         "[phoenix-heex]": {
           "editor.formatOnSave": true,
-          "editor.defaultFormatter": "JakeBecker.elixir-ls"
+          "editor.defaultFormatter": "jakebecker.elixir-ls"
         },
         // "elixirLS.projectDir": "minimap",
         "elixirLS.fetchDeps": true,
@@ -91,12 +100,10 @@
         // Language Support //
         // Elixir
         "pgourlain.erlang",
-        "JakeBecker.elixir-ls",
+        "jakebecker.elixir-ls",
         "phoenixframework.phoenix",
-        "pantajoe.vscode-elixir-credo",
-        "martinhrvn.ash-framework-snippets",
         // Terraform
-        "HashiCorp.terraform",
+        "hashicorp.terraform",
         // Powershell
         "ms-vscode.powershell",
         // JS/CSS/HTML
@@ -113,8 +120,6 @@
         "ahmadalli.vscode-nginx-conf",
         "redhat.vscode-yaml",
 
-        // Documentation
-        "streetsidesoftware.code-spell-checker",
         "jebbs.plantuml",
         "likec4.likec4-vscode",
         "davidanson.vscode-markdownlint"

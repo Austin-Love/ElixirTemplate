@@ -7,54 +7,35 @@
 # General application configuration
 import Config
 
-config :ash,
-  include_embedded_source_by_default?: false,
-  show_keysets_for_all_actions?: false,
-  default_page_type: :keyset,
-  policies: [no_filter_static_forbidden_reads?: false],
-  allow_forbidden_field_for_relationships_by_default?: true
+config :elixir_template, :scopes,
+  accounts_user: [
+    default: false,
+    module: ElixirTemplate.Accounts.Scope,
+    assign_key: :current_scope,
+    access_path: [:user, :id],
+    schema_key: :user_id,
+    schema_type: :id,
+    schema_table: :users,
+    test_data_fixture: ElixirTemplate.AccountsFixtures,
+    test_login_helper: :register_and_log_in_user
+  ]
 
-config :spark,
-  formatter: [
-    remove_parens?: true,
-    "Ash.Resource": [
-      section_order: [
-        :admin,
-        :authentication,
-        :tokens,
-        :postgres,
-        :resource,
-        :code_interface,
-        :actions,
-        :policies,
-        :pub_sub,
-        :preparations,
-        :changes,
-        :validations,
-        :multitenancy,
-        :attributes,
-        :relationships,
-        :calculations,
-        :aggregates,
-        :identities
-      ]
-    ],
-    "Ash.Domain": [
-      section_order: [:admin, :resources, :policies, :authorization, :domain, :execution]
-    ]
+config :elixir_template, :scopes,
+  user: [
+    default: true,
+    module: ElixirTemplate.Accounts.Scope,
+    assign_key: :current_scope,
+    access_path: [:user, :id],
+    schema_key: :user_id,
+    schema_type: :id,
+    schema_table: :users,
+    test_data_fixture: ElixirTemplate.AccountsFixtures,
+    test_login_helper: :register_and_log_in_user
   ]
 
 config :elixir_template,
   ecto_repos: [ElixirTemplate.Repo],
-  generators: [timestamp_type: :utc_datetime],
-  ash_domains: [ElixirTemplate.Accounts]
-
-# Configure your database
-config :elixir_template, ElixirTemplate.Repo,
-  url: System.get_env("DATABASE_URL"),
-  stacktrace: true,
-  show_sensitive_data_on_connection_error: config_env() != :prod,
-  pool_size: 10
+  generators: [timestamp_type: :utc_datetime]
 
 # Configures the endpoint
 config :elixir_template, ElixirTemplateWeb.Endpoint,
@@ -65,7 +46,7 @@ config :elixir_template, ElixirTemplateWeb.Endpoint,
     layout: false
   ],
   pubsub_server: ElixirTemplate.PubSub,
-  live_view: [signing_salt: "xwUqkBg1"]
+  live_view: [signing_salt: "KjVbassY"]
 
 # Configures the mailer
 #
@@ -81,21 +62,20 @@ config :esbuild,
   version: "0.17.11",
   elixir_template: [
     args:
-      ~w(js/app.js --bundle --target=es2017 --outdir=../priv/static/assets --external:/fonts/* --external:/images/*),
+      ~w(js/app.js --bundle --target=es2022 --outdir=../priv/static/assets/js --external:/fonts/* --external:/images/*),
     cd: Path.expand("../assets", __DIR__),
     env: %{"NODE_PATH" => Path.expand("../deps", __DIR__)}
   ]
 
 # Configure tailwind (the version is required)
 config :tailwind,
-  version: "3.4.3",
+  version: "4.0.9",
   elixir_template: [
     args: ~w(
-      --config=tailwind.config.js
-      --input=css/app.css
-      --output=../priv/static/assets/app.css
+      --input=assets/css/app.css
+      --output=priv/static/assets/css/app.css
     ),
-    cd: Path.expand("../assets", __DIR__)
+    cd: Path.expand("..", __DIR__)
   ]
 
 # Configures Elixir's Logger

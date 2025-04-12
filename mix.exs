@@ -5,7 +5,7 @@ defmodule ElixirTemplate.MixProject do
     [
       app: :elixir_template,
       version: "0.1.0",
-      elixir: "~> 1.17",
+      elixir: "~> 1.18",
       test_coverage: [summary: [threshold: calculate_threshold()]],
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
@@ -13,7 +13,8 @@ defmodule ElixirTemplate.MixProject do
       deps: deps(),
       preferred_cli_env: [
         "test.watch": :test
-      ]
+      ],
+      listeners: [Phoenix.CodeReloader]
     ]
   end
 
@@ -36,16 +37,9 @@ defmodule ElixirTemplate.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:sourceror, "~> 1.7", only: [:dev, :test]},
-      {:ash, "~> 3.0"},
-      {:ash_phoenix, "~> 2.0"},
-      {:ash_postgres, "~> 2.0"},
-      {:ash_admin, "~> 0.13"},
-      {:ash_authentication, "~> 4.0"},
-      {:ash_authentication_phoenix, "~> 2.0"},
       {:bcrypt_elixir, "~> 3.0"},
       {:simple_sat, "~> 0.1.3"},
-      {:phoenix, "~> 1.7.14"},
+      {:phoenix, "~> 1.8.0-rc.0", override: true},
       {:phoenix_ecto, "~> 4.5"},
       {:ecto_sql, "~> 3.10"},
       {:postgrex, ">= 0.0.0"},
@@ -55,8 +49,8 @@ defmodule ElixirTemplate.MixProject do
       {:phoenix_live_view, "~> 1.0.2", override: true},
       {:floki, ">= 0.30.0"},
       {:phoenix_live_dashboard, "~> 0.8.3"},
-      {:esbuild, "~> 0.8", runtime: Mix.env() in [:dev, :kind]},
-      {:tailwind, "~> 0.2", runtime: Mix.env() in [:dev, :kind]},
+      {:esbuild, "~> 0.9", runtime: Mix.env() in [:dev, :kind]},
+      {:tailwind, "~> 0.3", runtime: Mix.env() in [:dev, :kind]},
       {:heroicons,
        github: "tailwindlabs/heroicons",
        tag: "v2.1.1",
@@ -105,7 +99,7 @@ defmodule ElixirTemplate.MixProject do
       # Generate module docs as an HTML file for easier reading by running "mix docs"
       {:ex_doc, "~> 0.25", only: [:kind, :dev], runtime: false},
       {:cloak, "~> 1.1"},
-      {:styler, "~> 0.11", only: [:dev, :test, :kind], runtime: false},
+      {:styler, "~> 1.0", only: [:dev, :test, :kind], runtime: false},
       {:ecto_psql_extras, "~> 0.7"},
       # Telemetry for prometheus
       {:telemetry_metrics_prometheus_core, "~> 1.1"},
@@ -130,9 +124,8 @@ defmodule ElixirTemplate.MixProject do
        tag: "opentelemetry-telemetry-v1.1.2",
        sparse: "instrumentation/opentelemetry_finch"},
       {:timex, "~> 3.7"},
-      {:poison, "~> 3.0"},
       {:hackney, "~> 1.9"},
-      {:igniter, "~> 0.5", only: [:dev, :test]}
+
     ]
   end
 
@@ -152,15 +145,15 @@ defmodule ElixirTemplate.MixProject do
         &npm_ci/1,
         "assets.setup",
         "assets.build",
-        "ash.setup",
+        "ecto.setup",
         "compile",
         "run priv/repo/seeds.exs"
       ],
-      "ecto.setup": ["ash.setup", "ash.migrate"],
+      "ecto.setup": ["ecto.create", "ecto.migrate"],
       "ecto.seed": ["run priv/repo/seeds.exs"],
       "user.seed": ["run priv/repo/seeds/user_data_seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
-      test: ["ash.setup --quiet", "test"],
+      test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
       "assets.setup": [
         "tailwind.install --if-missing",
         "esbuild.install --if-missing"
@@ -175,8 +168,7 @@ defmodule ElixirTemplate.MixProject do
       "gen.env": ["deps.get", "gen_env"],
       "gen.lang": [&gen_lang/1],
       "gen.translate": [&gen_translate/1],
-      ugh: [&just_work_please/1],
-      "phx.routes": ["phx.routes", "ash_authentication.phoenix.routes"]
+      ugh: [&just_work_please/1]
     ]
   end
 
@@ -216,19 +208,8 @@ defmodule ElixirTemplate.MixProject do
   end
 
   def calculate_threshold do
-    # Increase this cap to 80% if ctf gets funded
     max_threshold = 60
 
-    day_we_start_counting = ~D[2025-02-28]
-    diff = Date.diff(Date.utc_today(), day_we_start_counting)
-
-    if(diff > 0) do
-      # increase our test coverage threshold by 10% every month, up to max_threshold.
-      months_since_starting = div(diff, 30)
-
-      min(20 + 10 * months_since_starting, max_threshold)
-    else
-      0
-    end
+    0
   end
 end

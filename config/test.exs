@@ -1,5 +1,8 @@
 import Config
-config :ash, disable_async?: true
+
+# Only in tests, remove the complexity from the password hashing algorithm
+config :bcrypt_elixir, :log_rounds, 1
+config :elixir_template, token_signing_secret: "2F0LR37a3uSOB32krDDKlXzE7YCuTj43"
 
 # Configure your database
 #
@@ -18,7 +21,7 @@ config :elixir_template, ElixirTemplate.Repo,
 # you can enable the server option below.
 config :elixir_template, ElixirTemplateWeb.Endpoint,
   http: [ip: {127, 0, 0, 1}, port: 4002],
-  secret_key_base: "3Z1/DD46lMUl9naZaZ7mN7bDahuvI2j9O6BazY4X6BYEwtEQ9TBr8PUMWsKSHkjl",
+  secret_key_base: "5SSZ6PfiKBT5NZB+b7osM7sv0l5/Vw4PezA/AhaP4Md2V+KxzPkbMlxNNyfKZVcs",
   server: false
 
 # In test we don't send emails
@@ -33,8 +36,8 @@ config :logger, level: :warning
 # Initialize plugs at runtime for faster test compilation
 config :phoenix, :plug_init_mode, :runtime
 
-config :phoenix_test, :endpoint, ElixirTemplateWeb.Endpoint
-
 # Enable helpful, but potentially expensive runtime checks
 config :phoenix_live_view,
   enable_expensive_runtime_checks: true
+
+config :phoenix_test, :endpoint, MyAppWeb.Endpoint
