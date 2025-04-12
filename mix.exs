@@ -125,7 +125,7 @@ defmodule ElixirTemplate.MixProject do
        sparse: "instrumentation/opentelemetry_finch"},
       {:timex, "~> 3.7"},
       {:hackney, "~> 1.9"},
-      {:igniter, "~> 0.5", only: [:dev, :test]}
+
     ]
   end
 
