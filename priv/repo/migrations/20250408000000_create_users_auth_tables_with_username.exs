@@ -1,11 +1,12 @@
-defmodule ElixirTemplate.Repo.Migrations.CreateUsersAuthTables do
+defmodule ElixirTemplate.Repo.Migrations.CreateUsersAuthTablesWithUsername do
   use Ecto.Migration
 
-  def change do
+  def up do
     execute "CREATE EXTENSION IF NOT EXISTS citext", ""
 
     create table(:users) do
       add :email, :citext, null: false
+      add :username, :string
       add :hashed_password, :string
       add :confirmed_at, :utc_datetime
 
@@ -13,6 +14,7 @@ defmodule ElixirTemplate.Repo.Migrations.CreateUsersAuthTables do
     end
 
     create unique_index(:users, [:email])
+    create unique_index(:users, [:username])
 
     create table(:users_tokens) do
       add :user_id, references(:users, on_delete: :delete_all), null: false
@@ -25,5 +27,11 @@ defmodule ElixirTemplate.Repo.Migrations.CreateUsersAuthTables do
 
     create index(:users_tokens, [:user_id])
     create unique_index(:users_tokens, [:context, :token])
+  end
+
+  def down do
+    drop table(:users_tokens)
+    drop table(:users)
+    execute "DROP EXTENSION IF EXISTS citext", ""
   end
 end
