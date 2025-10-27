@@ -33,8 +33,11 @@
           "editor.formatOnSave": true,
           "editor.defaultFormatter": "jakebecker.elixir-ls"
         },
-        // "elixirLS.projectDir": "minimap",
+     
         "elixirLS.fetchDeps": true,
+        "elixirLS.enableTestLenses": true,
+        "elixirLS.mixEnv": "dev",
+        "elixirLS.dotFormatter": ".formatter.exs",
         "files.associations": {
           "*.heex": "phoenix-heex"
         },
