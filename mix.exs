@@ -6,7 +6,7 @@ defmodule ElixirTemplate.MixProject do
       app: :elixir_template,
       version: "0.1.0",
       elixir: "~> 1.18",
-      test_coverage: [summary: [threshold: calculate_threshold()]],
+      test_coverage: [summary: [threshold: 0]],
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
@@ -39,7 +39,7 @@ defmodule ElixirTemplate.MixProject do
     [
       {:bcrypt_elixir, "~> 3.0"},
       {:simple_sat, "~> 0.1.3"},
-      {:phoenix, "~> 1.8.0-rc.0", override: true},
+      {:phoenix, "~> 1.8.3", override: true},
       {:phoenix_ecto, "~> 4.5"},
       {:ecto_sql, "~> 3.10"},
       {:postgrex, ">= 0.0.0"},
@@ -207,9 +207,4 @@ defmodule ElixirTemplate.MixProject do
     Mix.shell().cmd("mix do clear, deps.get, deps.compile, compile")
   end
 
-  def calculate_threshold do
-    max_threshold = 60
-
-    0
-  end
 end
