@@ -6,7 +6,7 @@ defmodule ElixirTemplate.MixProject do
       app: :elixir_template,
       version: "0.1.0",
       elixir: "~> 1.18",
-      test_coverage: [summary: [threshold: calculate_threshold()]],
+      test_coverage: [summary: [threshold: 0]],
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
@@ -39,7 +39,7 @@ defmodule ElixirTemplate.MixProject do
     [
       {:bcrypt_elixir, "~> 3.0"},
       {:simple_sat, "~> 0.1.3"},
-      {:phoenix, "~> 1.8.0-rc.0", override: true},
+      {:phoenix, "~> 1.8.3", override: true},
       {:phoenix_ecto, "~> 4.5"},
       {:ecto_sql, "~> 3.10"},
       {:postgrex, ">= 0.0.0"},
@@ -49,8 +49,8 @@ defmodule ElixirTemplate.MixProject do
       {:phoenix_live_view, "~> 1.0.2", override: true},
       {:floki, ">= 0.30.0"},
       {:phoenix_live_dashboard, "~> 0.8.3"},
-      {:esbuild, "~> 0.9", runtime: Mix.env() in [:dev, :kind]},
-      {:tailwind, "~> 0.3", runtime: Mix.env() in [:dev, :kind]},
+      {:esbuild, "~> 0.9", runtime: Mix.env() == :dev},
+      {:tailwind, "~> 0.3", runtime: Mix.env() == :dev},
       {:heroicons,
        github: "tailwindlabs/heroicons",
        tag: "v2.1.1",
@@ -64,7 +64,7 @@ defmodule ElixirTemplate.MixProject do
       {:plug_canonical_host, "~> 2.0"},
       {:cors_plug, "~> 3.0"},
       {:stream_data, "~> 1.1"},
-      {:mix_test_watch, "~> 1.0", only: [:dev, :test]},
+      {:mix_test_watch, "~> 1.0", only: [ :test]},
       {:phoenix_test, "~> 0.5.2", only: :test, runtime: false},
       {:swoosh, "~> 1.5"},
       {:finch, "~> 0.13"},
@@ -76,7 +76,7 @@ defmodule ElixirTemplate.MixProject do
       {:bandit, "~> 1.2"},
       # Run all checks
       # https://github.com/karolsluszniak/ex_check
-      {:ex_check, "~> 0.14.0", only: [:kind, :dev], runtime: false},
+      {:ex_check, "~> 0.14.0", only: [ :dev], runtime: false},
       # Code style, arch, problematic code, ...
       # https://github.com/rrrene/credo
       {:credo, "~> 1.7", only: [:dev, :test, :kind], runtime: false},
@@ -97,7 +97,7 @@ defmodule ElixirTemplate.MixProject do
       # Auto-refactoring utilities
       # https://github.com/hrzndhrn/recode
       # Generate module docs as an HTML file for easier reading by running "mix docs"
-      {:ex_doc, "~> 0.25", only: [:kind, :dev], runtime: false},
+      {:ex_doc, "~> 0.25", only: [ :dev], runtime: false},
       {:cloak, "~> 1.1"},
       {:styler, "~> 1.0", only: [:dev, :test, :kind], runtime: false},
       {:ecto_psql_extras, "~> 0.7"},
@@ -207,9 +207,4 @@ defmodule ElixirTemplate.MixProject do
     Mix.shell().cmd("mix do clear, deps.get, deps.compile, compile")
   end
 
-  def calculate_threshold do
-    max_threshold = 60
-
-    0
-  end
 end
