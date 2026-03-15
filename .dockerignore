@@ -1,0 +1,30 @@
+# Git
+.git
+.gitignore
+
+# Build artifacts
+_build
+deps
+node_modules
+
+# Dev/test files
+.devcontainer
+.github
+test
+.formatter.exs
+.credo.exs
+
+# Docker
+Dockerfile
+.dockerignore
+docker-compose*.yml
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db

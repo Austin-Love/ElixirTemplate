@@ -2,10 +2,30 @@
 #
 #     mix run priv/repo/seeds.exs
 #
-# Inside the script, you can read and write to any of your
-# repositories directly:
+# Or via the alias:
 #
-#     ElixirTemplate.Repo.insert!(%ElixirTemplate.SomeSchema{})
-#
-# We recommend using the bang functions (`insert!`, `update!`
-# and so on) as they will fail if something goes wrong.
+#     mix ecto.seed
+
+alias ElixirTemplate.Repo
+alias ElixirTemplate.Accounts
+
+# Only seed in dev environment
+if Mix.env() == :dev do
+  # Create a default dev user for quick login
+  case Accounts.register_user(%{
+         email: "dev@example.com",
+         username: "devuser",
+         password: "Password123!"
+       }) do
+    {:ok, user} ->
+      # Auto-confirm the dev user
+      user
+      |> Ecto.Changeset.change(confirmed_at: DateTime.utc_now() |> DateTime.truncate(:second))
+      |> Repo.update!()
+
+      IO.puts("Created dev user: dev@example.com / Password123!")
+
+    {:error, _changeset} ->
+      IO.puts("Dev user already exists: dev@example.com / Password123!")
+  end
+end

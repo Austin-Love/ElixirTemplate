@@ -40,4 +40,7 @@ config :phoenix, :plug_init_mode, :runtime
 config :phoenix_live_view,
   enable_expensive_runtime_checks: true
 
+# Disable Oban job processing during tests
+config :elixir_template, Oban, testing: :inline
+
 config :phoenix_test, :endpoint, MyAppWeb.Endpoint

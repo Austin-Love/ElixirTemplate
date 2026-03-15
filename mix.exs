@@ -125,7 +125,9 @@ defmodule ElixirTemplate.MixProject do
        sparse: "instrumentation/opentelemetry_finch"},
       {:timex, "~> 3.7"},
       {:hackney, "~> 1.9"},
-
+      # Background job processing
+      # https://github.com/oban-bg/oban
+      {:oban, "~> 2.18"},
     ]
   end
 

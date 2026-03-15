@@ -12,8 +12,8 @@ defmodule ElixirTemplate.Application do
       ElixirTemplate.Repo,
       {DNSCluster, query: Application.get_env(:elixir_template, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: ElixirTemplate.PubSub},
-      # Start a worker by calling: ElixirTemplate.Worker.start_link(arg)
-      # {ElixirTemplate.Worker, arg},
+      # Background job processing
+      {Oban, Application.fetch_env!(:elixir_template, Oban)},
       # Start to serve requests, typically the last entry
       ElixirTemplateWeb.Endpoint
     ]

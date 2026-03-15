@@ -83,6 +83,11 @@ config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
 
+# Configure Oban for background job processing
+config :elixir_template, Oban,
+  repo: ElixirTemplate.Repo,
+  queues: [default: 10, mailers: 20]
+
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
